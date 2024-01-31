@@ -1,6 +1,7 @@
 from django.urls import path, include
-from .views import UserRegisterView
+from .views import UserView, SettingView
 
 urlpatterns = [
-  path("user/", UserRegisterView.as_view()),
+  path("user/", UserView.as_view()),
+  path("setting/<int:user_id>", SettingView.as_view()),
 ]

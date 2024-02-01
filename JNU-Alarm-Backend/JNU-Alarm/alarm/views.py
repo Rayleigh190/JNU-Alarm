@@ -66,8 +66,7 @@ class UserView(APIView):
     result_dic = {'success': False, 'response': None, 'error': None}
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
   
-
-class SettingView(APIView):
+class SettingBasicView(APIView):
   authentication_classes = [JWTAuthentication]
   permission_classes = [IsAuthenticated]
   """
@@ -105,6 +104,50 @@ class SettingView(APIView):
       user.setting.basic.save()
       
       res_serializer = BasicSerializer(user.setting.basic)
+    
+      result_dic = {'success': True, 'response': res_serializer.data, 'error': None}
+      return Response(result_dic, status=status.HTTP_200_OK)
+
+    result_dic = {'success': False, 'response': None, 'error': serializer.errors}
+    return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
+  
+class SettingDepartmentView(APIView):
+  authentication_classes = [JWTAuthentication]
+  permission_classes = [IsAuthenticated]
+  """
+  * 사용자 학과 설정 조회
+  * 사용자 학과 설정 정보를 받아 올 수 있다.
+  """
+  def get(self, request, *args, **kwargs):
+    try:
+      user = User.objects.get(id=request.user.id)
+      department = user.setting.department
+      department_serializer = DepartmentSerializer(department)
+      result_dic = {'success': True, 'response': department_serializer.data, 'error': None}
+      return Response(result_dic, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+      result_dic = {'success': False, 'response': None, 'error': 'User not found'}
+      return Response(result_dic, status=status.HTTP_404_NOT_FOUND)
+    
+  """
+  * 사용자 학과 설정 수정
+  * 사용자 학과 설정 정보를 수정할 수 있다.
+  """
+  def post(self, request, *args, **kwargs):
+    try:
+      user = User.objects.get(id=request.user.id)
+    except User.DoesNotExist:
+      result_dic = {'success': False, 'response': None, 'error': 'User not found'}
+      return Response(result_dic, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = DepartmentSerializer(data=request.data)
+    if serializer.is_valid():
+      # Update data
+      user.setting.department.software_engineering = serializer.validated_data.get('software_engineering')
+      user.setting.department.electric_engineering = serializer.validated_data.get('electric_engineering')
+      user.setting.department.save()
+      
+      res_serializer = DepartmentSerializer(user.setting.department)
     
       result_dic = {'success': True, 'response': res_serializer.data, 'error': None}
       return Response(result_dic, status=status.HTTP_200_OK)

@@ -3,6 +3,7 @@
 ### My ###
 myvenv/
 JNU-Alarm/secrets.json
+temp/
 
 ### Django ###
 *.log

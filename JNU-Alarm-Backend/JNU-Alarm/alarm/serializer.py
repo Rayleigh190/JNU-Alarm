@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from .models import User, Setting, College, Department
+from .models import User, Setting, Basic, College, Department
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
   @classmethod
@@ -19,9 +20,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
       'fcm_token',
     ]
 
-class DepartmentSerializer(serializers.ModelSerializer):
+class BasicSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Department
+    model = Basic
     exclude = ['id']
 
 class CollegeSerializer(serializers.ModelSerializer):
@@ -29,11 +30,12 @@ class CollegeSerializer(serializers.ModelSerializer):
     model = College
     exclude = ['id']
 
+class DepartmentSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Department
+    exclude = ['id']
+
 class SettingSerializer(serializers.ModelSerializer):
   class Meta:
     model = Setting
     fields = '__all__'
-
-class SettingUpdateSerializer(serializers.Serializer):
-  college = CollegeSerializer()
-  department = DepartmentSerializer()

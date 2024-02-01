@@ -14,6 +14,9 @@ class Setting(models.Model):
   department = models.ForeignKey(Department, on_delete=models.CASCADE)
 
 class User(models.Model):
-  device_id = models.TextField(unique=True)
+  device_id = models.TextField(unique=True, blank=False, null=False)
   fcm_token = models.TextField(unique=True)
   setting = models.ForeignKey(Setting, on_delete=models.CASCADE)
+
+  def __str__(self):
+    return self.device_id

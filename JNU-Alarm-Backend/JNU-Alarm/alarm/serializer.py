@@ -34,6 +34,6 @@ class SettingSerializer(serializers.ModelSerializer):
     model = Setting
     fields = '__all__'
 
-# class SettingUpdateSerializer(serializers.Serializer):
-#   college = CollegeSerializer()
-#   department = DepartmentSerializer()
+class SettingUpdateSerializer(serializers.Serializer):
+  college = CollegeSerializer()
+  department = DepartmentSerializer()

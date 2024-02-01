@@ -3,5 +3,5 @@ from .views import UserView, SettingView
 
 urlpatterns = [
   path("user/", UserView.as_view()),
-  path("setting/<int:user_id>", SettingView.as_view()),
+  path("setting/", SettingView.as_view()),
 ]

@@ -1,26 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
-## 학과
-class Department(models.Model):
-  software_engineering = models.BooleanField(default=False)  # 소프트웨어공학과
-  electric_engineering = models.BooleanField(default=False)  # 전자공학과
-
-## 단과대
-class College(models.Model):
-  engineering = models.BooleanField(default=False)  # 공과대
-  natural_science = models.BooleanField(default=False)  # 자연과학대
-
-## 기본
-class Basic(models.Model):
-  weather = models.BooleanField(default=False)  # 날씨
-  emergency = models.BooleanField(default=False)  # 긴급
-
-## 전체 설정
-class Setting(models.Model):
-  basic = models.ForeignKey(Basic, on_delete=models.CASCADE)  # 기본
-  college = models.ForeignKey(College, on_delete=models.CASCADE)  # 단과대
-  department = models.ForeignKey(Department, on_delete=models.CASCADE)  # 학과
+from .SettingModel import Setting
+from .BasicModel import Basic
+from .CollegeModel import College
+from .DepartmentModel import Department
 
 # 사용자 계정 관련
 class UserManager(BaseUserManager):
@@ -49,7 +32,6 @@ class UserManager(BaseUserManager):
 
     return self.create_user(device_id, fcm_token, password, setting=setting, **extra_fields)
 
-
 class User(AbstractBaseUser, PermissionsMixin):
   device_id = models.TextField(unique=True, blank=False, null=False)
   fcm_token = models.TextField(unique=True)
@@ -70,4 +52,3 @@ class User(AbstractBaseUser, PermissionsMixin):
       return self.device_id
 
   USERNAME_FIELD = 'device_id'
-

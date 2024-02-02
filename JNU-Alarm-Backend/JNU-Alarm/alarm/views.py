@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import JsonResponse
 
-from .models import User, Setting, Basic, Department, College
+from .models import User, Setting, Basic, College, Department
 from .serializer import UserCreateSerializer, BasicSerializer, SettingSerializer, CollegeSerializer, DepartmentSerializer
 
 def get_tokens_for_user(user):

@@ -4,6 +4,7 @@
 myvenv/
 JNU-Alarm/secrets.json
 temp/
+JNU-Alarm/alarm/cron.py
 
 ### Django ###
 *.log

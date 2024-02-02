@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'alarm', 
+    'django_crontab',
+    'alarm',
 ]
 
 MIDDLEWARE = [
@@ -153,3 +154,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CRONJOBS = [
+    ('*/1 * * * *', 'alarm.cron.my_scheduled_job', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 '),  # 3초 간격으로 실행
+]

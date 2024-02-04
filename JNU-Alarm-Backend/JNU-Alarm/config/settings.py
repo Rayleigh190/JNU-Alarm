@@ -156,5 +156,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONJOBS = [
-    ('*/1 * * * *', 'alarm.cron.my_scheduled_job', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 '),  # 3초 간격으로 실행
+    ('*/1 * * * *', 'alarm.cron.software_engineering_crawling', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 '),
+    ('*/1 * * * *', 'alarm.cron.engineering_crawling', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 '),
 ]

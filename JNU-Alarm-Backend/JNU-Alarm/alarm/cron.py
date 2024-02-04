@@ -4,11 +4,12 @@ import pprint
 from datetime import datetime
 
 from .models import User, Department, SoftwareEngineering
+from .models import College, Engineering
 
-url = 'https://sw.jnu.ac.kr/sw/8250/subview.do'
 
-
-def my_scheduled_job():
+# 소프트웨어공학과
+def software_engineering_crawling():
+  url = 'https://sw.jnu.ac.kr/sw/8250/subview.do'
   today = str(datetime.now())
   response = requests.get(url)
   soup = BeautifulSoup(response.text, 'html.parser')
@@ -45,3 +46,43 @@ def my_scheduled_job():
         print(f"{user.id}에게 알림 발송 : {user.fcm_token}")
   else:
     print(f"🖥️ 소프트웨어공학과 새로운 공지 없음 : {today} ")
+
+# 공과대학
+def engineering_crawling():
+  url = 'https://eng.jnu.ac.kr/eng/7343/subview.do'
+  today = str(datetime.now())
+  response = requests.get(url)
+  soup = BeautifulSoup(response.text, 'html.parser')
+  posts = []
+  last_post = Engineering.objects.last()
+  for tr in soup.findAll('tr', attrs={'class':''}):
+    try:
+      td = tr.find('td', attrs={'class':'td-subject'})
+      title = td.find('strong').text
+      href = td.find('a')['href']
+      postUrl = "https://eng.jnu.ac.kr/"+href
+      post_data = {
+        'category':"공과 대학",
+        'title': title,
+        'url': postUrl
+      }
+      if title == last_post.title:
+        break
+      else:
+        posts.append(post_data)
+        
+    except:
+      pass
+  
+  if len(posts) > 0:
+    for post in reversed(posts):
+      Engineering.objects.create(title=post['title'])
+      # 공과대학을 구독한 User에게 알림 발송
+      isTrue_college =College.objects.filter(engineering=True)
+      isTrue_users = User.objects.filter(setting__college__in=isTrue_college)
+      print(f"🔨 공과대학 알림 발송 : {today} ")
+      pprint.pprint(post)
+      for user in isTrue_users:
+        print(f"{user.id}에게 알림 발송 : {user.fcm_token}")
+  else:
+    print(f"🔨 공과대학 새로운 공지 없음 : {today} ")

@@ -6,6 +6,9 @@ from datetime import datetime
 from .models import User, Department, SoftwareEngineering
 from .models import College, Engineering
 
+def crawling_job():
+  software_engineering_crawling()
+  engineering_crawling()
 
 # 소프트웨어공학과
 def software_engineering_crawling():

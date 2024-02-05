@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from datetime import timedelta
 from pathlib import Path
-import os, json
+import os, environ
 from django.core.exceptions import ImproperlyConfigured
 
 AUTH_USER_MODEL = 'alarm.User'
@@ -19,24 +19,17 @@ AUTH_USER_MODEL = 'alarm.User'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# For secret file
-secret_file = os.path.join(BASE_DIR, 'secrets.json') # secrets.json 파일 위치를 명시
+env = environ.Env(
+    DEBUG=(bool, False)
+)
 
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
-
-def get_secret(setting, secrets=secrets):
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_secret("SECRET_KEY")
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -156,6 +149,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONJOBS = [
-    ('*/1 * * * *', 'alarm.cron.software_engineering_crawling', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 '),
-    ('*/1 * * * *', 'alarm.cron.engineering_crawling', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 '),
+    ('*/1 * * * *', 'alarm.cron.crawling_job', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 ')
 ]

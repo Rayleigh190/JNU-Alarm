@@ -2,7 +2,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,django,visualstudiocode,python
 ### My ###
 myvenv/
-JNU-Alarm/secrets.json
 temp/
 
 ### Django ###

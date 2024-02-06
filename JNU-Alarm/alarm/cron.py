@@ -6,6 +6,10 @@ from datetime import datetime
 from .models import User, Department, SoftwareEngineering
 from .models import College, Engineering
 
+def send_message(title, body, users):
+  print(f"pushed to {users}")
+  return
+
 def crawling_job():
   software_engineering_crawling()
   engineering_crawling()
@@ -25,7 +29,7 @@ def software_engineering_crawling():
       href = td.find('a')['href']
       postUrl = "https://sw.jnu.ac.kr/"+href
       post_data = {
-        'category':"소프트웨어 공학과",
+        'category':"소프트웨어공학과",
         'title': title,
         'url': postUrl
       }
@@ -33,7 +37,6 @@ def software_engineering_crawling():
         break
       else:
         posts.append(post_data)
-        
     except:
       pass
   
@@ -45,8 +48,7 @@ def software_engineering_crawling():
       isTrue_users = User.objects.filter(setting__department__in=isTrue_departments)
       print(f"🖥️ 소프트웨어공학과 알림 발송 : {today} ")
       pprint.pprint(post)
-      for user in isTrue_users:
-        print(f"{user.id}에게 알림 발송 : {user.fcm_token}")
+      send_message(post['category'], post['title'], isTrue_users)
   else:
     print(f"🖥️ 소프트웨어공학과 새로운 공지 없음 : {today} ")
 
@@ -65,7 +67,7 @@ def engineering_crawling():
       href = td.find('a')['href']
       postUrl = "https://eng.jnu.ac.kr/"+href
       post_data = {
-        'category':"공과 대학",
+        'category':"공과대학",
         'title': title,
         'url': postUrl
       }
@@ -73,7 +75,6 @@ def engineering_crawling():
         break
       else:
         posts.append(post_data)
-        
     except:
       pass
   
@@ -85,7 +86,6 @@ def engineering_crawling():
       isTrue_users = User.objects.filter(setting__college__in=isTrue_college)
       print(f"🔨 공과대학 알림 발송 : {today} ")
       pprint.pprint(post)
-      for user in isTrue_users:
-        print(f"{user.id}에게 알림 발송 : {user.fcm_token}")
+      send_message(post['category'], post['title'], isTrue_users)
   else:
     print(f"🔨 공과대학 새로운 공지 없음 : {today} ")

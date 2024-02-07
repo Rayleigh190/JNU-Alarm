@@ -3,10 +3,12 @@ from bs4 import BeautifulSoup
 import pprint
 from datetime import datetime
 
-from .models import User, Department, SoftwareEngineering
+from .models import User, Notification, Department, SoftwareEngineering
 from .models import College, Engineering
 
-def send_message(title, body, users):
+def send_message(title, body, users, link):
+  for user in users:
+    Notification.objects.create(user=user, category=title, title=body, link=link)
   print(f"pushed to {users}")
   return
 
@@ -48,7 +50,7 @@ def software_engineering_crawling():
       isTrue_users = User.objects.filter(setting__department__in=isTrue_departments)
       print(f"🖥️ 소프트웨어공학과 알림 발송 : {today} ")
       pprint.pprint(post)
-      send_message(post['category'], post['title'], isTrue_users)
+      send_message(post['category'], post['title'], isTrue_users, post['url'])
   else:
     print(f"🖥️ 소프트웨어공학과 새로운 공지 없음 : {today} ")
 
@@ -86,6 +88,6 @@ def engineering_crawling():
       isTrue_users = User.objects.filter(setting__college__in=isTrue_college)
       print(f"🔨 공과대학 알림 발송 : {today} ")
       pprint.pprint(post)
-      send_message(post['category'], post['title'], isTrue_users)
+      send_message(post['category'], post['title'], isTrue_users, post[url])
   else:
     print(f"🔨 공과대학 새로운 공지 없음 : {today} ")

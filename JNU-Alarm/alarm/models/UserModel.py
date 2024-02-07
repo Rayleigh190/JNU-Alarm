@@ -52,3 +52,10 @@ class User(AbstractBaseUser, PermissionsMixin):
       return self.device_id
 
   USERNAME_FIELD = 'device_id'
+
+class Notification(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  category = models.TextField()
+  title = models.TextField()
+  link = models.URLField()
+  created_at = models.DateTimeField(auto_now_add=True)

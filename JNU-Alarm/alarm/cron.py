@@ -16,78 +16,68 @@ def crawling_job():
   software_engineering_crawling()
   engineering_crawling()
 
-# 소프트웨어공학과
-def software_engineering_crawling():
-  url = 'https://sw.jnu.ac.kr/sw/8250/subview.do'
-  today = str(datetime.now())
+def general_crawling(base_url, url, department_model):
   response = requests.get(url)
   soup = BeautifulSoup(response.text, 'html.parser')
   posts = []
-  last_post = SoftwareEngineering.objects.last()
+  last_post = department_model.objects.last()
   for tr in soup.findAll('tr', attrs={'class':''}):
     try:
-      td = tr.find('td', attrs={'class':'td-subject'})
-      title = td.find('strong').text
-      href = td.find('a')['href']
-      postUrl = "https://sw.jnu.ac.kr/"+href
-      post_data = {
-        'category':"소프트웨어공학과",
-        'title': title,
-        'url': postUrl
-      }
-      if title == last_post.title:
+      if tr.find('td') is None:
+        break
+      num = int(tr.find('td', attrs={'class':'td-num'}).text)
+      if num <= last_post.num:
         break
       else:
+        td = tr.find('td', attrs={'class':'td-subject'})
+        title = td.find('strong').text
+        href = td.find('a')['href']
+        postUrl = base_url + href
+        post_data = {
+          'num': num,
+          'title': title,
+          'url': postUrl
+        }
         posts.append(post_data)
-    except:
+    except Exception as e:
+      print("크롤링중 예외 발생", e)
       pass
+  return posts
+
+# 소프트웨어공학과
+def software_engineering_crawling():
+  today = str(datetime.now())
+  base_url = "https://sw.jnu.ac.kr"
+  url = 'https://sw.jnu.ac.kr/sw/8250/subview.do'
+  posts = general_crawling(base_url=base_url, url=url, department_model=SoftwareEngineering)
   
   if len(posts) > 0:
     for post in reversed(posts):
-      SoftwareEngineering.objects.create(title=post['title'])
+      SoftwareEngineering.objects.create(num=post['num'], title=post['title'])
       # 소프트웨어공학과를 구독한 User에게 알림 발송
       isTrue_departments = Department.objects.filter(software_engineering=True)
       isTrue_users = User.objects.filter(setting__department__in=isTrue_departments)
-      print(f"🖥️ 소프트웨어공학과 알림 발송 : {today} ")
+      send_message("소프트웨어공학과", post['title'], isTrue_users, post['url'])
+      print(f"💻 소프트웨어공학과 알림 발송 : {today} ")
       pprint.pprint(post)
-      send_message(post['category'], post['title'], isTrue_users, post['url'])
   else:
-    print(f"🖥️ 소프트웨어공학과 새로운 공지 없음 : {today} ")
+    print(f"💻 소프트웨어공학과 새로운 공지 없음 : {today} ")
 
 # 공과대학
 def engineering_crawling():
-  url = 'https://eng.jnu.ac.kr/eng/7343/subview.do'
   today = str(datetime.now())
-  response = requests.get(url)
-  soup = BeautifulSoup(response.text, 'html.parser')
-  posts = []
-  last_post = Engineering.objects.last()
-  for tr in soup.findAll('tr', attrs={'class':''}):
-    try:
-      td = tr.find('td', attrs={'class':'td-subject'})
-      title = td.find('strong').text
-      href = td.find('a')['href']
-      postUrl = "https://eng.jnu.ac.kr/"+href
-      post_data = {
-        'category':"공과대학",
-        'title': title,
-        'url': postUrl
-      }
-      if title == last_post.title:
-        break
-      else:
-        posts.append(post_data)
-    except:
-      pass
+  base_url = "https://eng.jnu.ac.kr"
+  url = 'https://eng.jnu.ac.kr/eng/7343/subview.do'
+  posts = general_crawling(base_url=base_url, url=url, department_model=Engineering)
   
   if len(posts) > 0:
     for post in reversed(posts):
-      Engineering.objects.create(title=post['title'])
+      Engineering.objects.create(num=post['num'], title=post['title'])
       # 공과대학을 구독한 User에게 알림 발송
       isTrue_college =College.objects.filter(engineering=True)
       isTrue_users = User.objects.filter(setting__college__in=isTrue_college)
-      print(f"🔨 공과대학 알림 발송 : {today} ")
+      send_message("공과대학", post['title'], isTrue_users, post['url'])
+      print(f"🛠️ 공과대학 알림 발송 : {today} ")
       pprint.pprint(post)
-      send_message(post['category'], post['title'], isTrue_users, post[url])
   else:
-    print(f"🔨 공과대학 새로운 공지 없음 : {today} ")
+    print(f"🛠️ 공과대학 새로운 공지 없음 : {today} ")

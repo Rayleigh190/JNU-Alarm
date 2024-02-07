@@ -7,6 +7,7 @@ class College(models.Model):
 
 ## 공과대학
 class Engineering(models.Model):
+  num = models.PositiveIntegerField()
   title = models.TextField()
   created_at = models.DateTimeField(auto_now_add=True)
 

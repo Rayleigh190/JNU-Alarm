@@ -7,6 +7,7 @@ class Department(models.Model):
 
 ## 소프트웨어공학과
 class SoftwareEngineering(models.Model):
+  num = models.PositiveIntegerField()
   title = models.TextField()
   created_at = models.DateTimeField(auto_now_add=True)
 

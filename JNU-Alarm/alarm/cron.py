@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 import pprint
 from datetime import datetime
 
-from .models import User, Notification, Department, SoftwareEngineering
+from .models import User, Notification
+from .models import Department, Architecture, SoftwareEngineering
 from .models import College, Engineering
 
 def send_message(title, body, users, link):
@@ -13,6 +14,7 @@ def send_message(title, body, users, link):
   return
 
 def crawling_job():
+  architecture_crawling()
   software_engineering_crawling()
   engineering_crawling()
 
@@ -24,7 +26,7 @@ def general_crawling(base_url, url, department_model):
   for tr in soup.findAll('tr', attrs={'class':''}):
     try:
       if tr.find('td') is None:
-        break
+        continue
       num = int(tr.find('td', attrs={'class':'td-num'}).text)
       if num <= last_post.num:
         break
@@ -43,6 +45,25 @@ def general_crawling(base_url, url, department_model):
       print("크롤링중 예외 발생", e)
       pass
   return posts
+
+## 학과 클롤링
+# 건축학부
+def architecture_crawling():
+  today = str(datetime.now())
+  base_url = "https://archi.jnu.ac.kr"
+  url = 'https://archi.jnu.ac.kr/archi/8023/subview.do'
+  posts = general_crawling(base_url=base_url, url=url, department_model=Architecture)
+  
+  if len(posts) > 0:
+    for post in reversed(posts):
+      Architecture.objects.create(num=post['num'], title=post['title'])
+      isTrue_departments = Department.objects.filter(architecture=True)
+      isTrue_users = User.objects.filter(setting__department__in=isTrue_departments)
+      send_message("건축학부", post['title'], isTrue_users, post['url'])
+      print(f"🏠 건축학부 알림 발송 : {today} ")
+      pprint.pprint(post)
+  else:
+    print(f"🏠 건축학부 새로운 공지 없음 : {today} ")
 
 # 소프트웨어공학과
 def software_engineering_crawling():

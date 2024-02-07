@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from .models import User, Notification, Setting, Basic, Department, College
 # 학과
-from .models import Architecture, SoftwareEngineering
+from .models import Architecture, MaterialsEngineering, SoftwareEngineering
 # 단과대
 from .models import Engineering
 
@@ -24,5 +24,6 @@ admin.site.register([
 admin.site.register([
     Department,
     Architecture,
+    MaterialsEngineering,
     SoftwareEngineering,
 ])

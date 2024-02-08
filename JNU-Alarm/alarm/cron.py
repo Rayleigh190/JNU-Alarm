@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pprint
 from datetime import datetime
 
-from .models import User, Notification
+from .models import Device, Notification
 from .models import Department, Architecture, MaterialsEngineering, MechanicalEngineering, Biotechnology, SoftwareEngineering
 from .models import College, Engineering
 
@@ -61,7 +61,7 @@ def architecture_crawling():
     for post in reversed(posts):
       Architecture.objects.create(num=post['num'], title=post['title'])
       isTrue_departments = Department.objects.filter(architecture=True)
-      isTrue_users = User.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 🏠 건축학부 알림 발송")
       pprint.pprint(post)
       send_message("건축학부", post['title'], isTrue_users, post['url'])
@@ -79,7 +79,7 @@ def materials_engineering_crawling():
     for post in reversed(posts):
       MaterialsEngineering.objects.create(num=post['num'], title=post['title'])
       isTrue_departments = Department.objects.filter(materials_engineering=True)
-      isTrue_users = User.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 💎 고분자융합소재공학부 알림 발송")
       pprint.pprint(post)
       send_message("고분자융합소재공학부", post['title'], isTrue_users, post['url'])
@@ -97,7 +97,7 @@ def mechanical_engineering_crawling():
     for post in reversed(posts):
       MechanicalEngineering.objects.create(num=post['num'], title=post['title'])
       isTrue_departments = Department.objects.filter(mechanical_engineering=True)
-      isTrue_users = User.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : ⚙️ 기계공학부 알림 발송")
       pprint.pprint(post)
       send_message("기계공학부", post['title'], isTrue_users, post['url'])
@@ -115,7 +115,7 @@ def biotechnology_crawling():
     for post in reversed(posts):
       Biotechnology.objects.create(num=post['num'], title=post['title'])
       isTrue_departments = Department.objects.filter(biotechnology=True)
-      isTrue_users = User.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 🐣 생물공학과 알림 발송")
       pprint.pprint(post)
       send_message("생물공학과", post['title'], isTrue_users, post['url'])
@@ -134,7 +134,7 @@ def software_engineering_crawling():
       SoftwareEngineering.objects.create(num=post['num'], title=post['title'])
       # 소프트웨어공학과를 구독한 User에게 알림 발송
       isTrue_departments = Department.objects.filter(software_engineering=True)
-      isTrue_users = User.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 💻 소프트웨어공학과 알림 발송")
       pprint.pprint(post)
       send_message("소프트웨어공학과", post['title'], isTrue_users, post['url'])
@@ -153,7 +153,7 @@ def engineering_crawling():
       Engineering.objects.create(num=post['num'], title=post['title'])
       # 공과대학을 구독한 User에게 알림 발송
       isTrue_college =College.objects.filter(engineering=True)
-      isTrue_users = User.objects.filter(setting__college__in=isTrue_college)
+      isTrue_users = Device.objects.filter(setting__college__in=isTrue_college)
       print(f"{today} : 🛠️ 공과대학 알림 발송")
       pprint.pprint(post)
       send_message("공과대학", post['title'], isTrue_users, post['url'])

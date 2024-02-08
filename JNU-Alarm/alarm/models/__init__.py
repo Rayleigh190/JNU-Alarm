@@ -1,4 +1,4 @@
-from .UserModel import *
+from .DeviceModel import *
 from .SettingModel import *
 from .BasicModel import *
 from .CollegeModel import *

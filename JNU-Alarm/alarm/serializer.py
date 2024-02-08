@@ -1,23 +1,12 @@
 from rest_framework import serializers
-from .models import User, Setting, Basic, College, Department
-
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+from .models import Device, Setting, Basic, College, Department
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-  @classmethod
-  def get_token(cls, user):
-    token = super().get_token(user)
-    token['user_id'] = user.id
-    return token
-
-class UserCreateSerializer(serializers.ModelSerializer):
+class DeviceCreateSerializer(serializers.ModelSerializer):
   class Meta:
-    model = User
+    model = Device
     fields = [
       'device_id',
-      'fcm_token',
     ]
 
 class BasicSerializer(serializers.ModelSerializer):

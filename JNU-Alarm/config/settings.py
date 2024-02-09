@@ -149,3 +149,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRONJOBS = [
     ('*/1 * * * *', 'alarm.cron.crawling_job', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 ')
 ]
+
+## FCM
+import firebase_admin
+from firebase_admin import credentials
+
+cred_path = os.path.join(BASE_DIR, "serviceAccountKey.json")
+cred = credentials.Certificate(cred_path)
+firebase_admin.initialize_app(cred)

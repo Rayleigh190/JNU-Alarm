@@ -7,19 +7,34 @@ from .models import Device, Notification
 from .models import Department, Architecture, MaterialsEngineering, MechanicalEngineering, Biotechnology, SoftwareEngineering
 from .models import College, Engineering
 
-def send_message(title, body, users, link):
+from firebase_admin import messaging
+
+def send_message(title, body, users, link, topic):
+  # print(f"pushed to {users}")
+  # See documentation on defining a message payload.
+  message = messaging.Message(
+      notification=messaging.Notification(
+        title=title,
+        body=body,
+      ),
+      topic=topic,
+  )
+  # Send a message to the devices subscribed to the provided topic.
+  response = messaging.send(message)
+  # Response is a message ID string.
+  print('Successfully sent message:', response)
+
   for user in users:
-    Notification.objects.create(user=user, category=title, title=body, link=link)
-  print(f"pushed to {users}")
+    Notification.objects.create(device=user, title=title, body=body, link=link)
   return
 
 def crawling_job():
   architecture_crawling()
-  materials_engineering_crawling()
-  mechanical_engineering_crawling()
-  biotechnology_crawling()
-  software_engineering_crawling()
-  engineering_crawling()
+  # materials_engineering_crawling()
+  # mechanical_engineering_crawling()
+  # biotechnology_crawling()
+  # software_engineering_crawling()
+  # engineering_crawling()
 
 def general_crawling(base_url, url, department_model):
   response = requests.get(url)
@@ -64,7 +79,7 @@ def architecture_crawling():
       isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 🏠 건축학부 알림 발송")
       pprint.pprint(post)
-      send_message("건축학부", post['title'], isTrue_users, post['url'])
+      send_message("건축학부", post['title'], isTrue_users, post['url'], 'archi')
   else:
     print(f"{today} : 🏠 건축학부 새로운 공지 없음")
 

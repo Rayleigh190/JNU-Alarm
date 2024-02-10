@@ -9,8 +9,7 @@ from .models import College, Engineering
 
 from firebase_admin import messaging
 
-def send_message(title, body, users, link, topic):
-  # print(f"pushed to {users}")
+def send_topic_message(title, body, devices, link, topic):
   # See documentation on defining a message payload.
   message = messaging.Message(
       notification=messaging.Notification(
@@ -24,17 +23,17 @@ def send_message(title, body, users, link, topic):
   # Response is a message ID string.
   print('Successfully sent message:', response)
 
-  for user in users:
-    Notification.objects.create(device=user, title=title, body=body, link=link)
+  for device in devices:
+    Notification.objects.create(device=device, title=title, body=body, link=link)
   return
 
 def crawling_job():
   architecture_crawling()
-  # materials_engineering_crawling()
-  # mechanical_engineering_crawling()
-  # biotechnology_crawling()
-  # software_engineering_crawling()
-  # engineering_crawling()
+  materials_engineering_crawling()
+  mechanical_engineering_crawling()
+  biotechnology_crawling()
+  software_engineering_crawling()
+  engineering_crawling()
 
 def general_crawling(base_url, url, department_model):
   response = requests.get(url)
@@ -65,7 +64,7 @@ def general_crawling(base_url, url, department_model):
   return posts
 
 ## 학과
-# 건축학부
+# 건축학부, archi
 def architecture_crawling():
   today = str(datetime.now())
   base_url = "https://archi.jnu.ac.kr"
@@ -79,11 +78,11 @@ def architecture_crawling():
       isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 🏠 건축학부 알림 발송")
       pprint.pprint(post)
-      send_message("건축학부", post['title'], isTrue_users, post['url'], 'archi')
+      send_topic_message("건축학부", post['title'], isTrue_users, post['url'], 'archi')
   else:
     print(f"{today} : 🏠 건축학부 새로운 공지 없음")
 
-# 고분자융합소재공학부
+# 고분자융합소재공학부, pf
 def materials_engineering_crawling():
   today = str(datetime.now())
   base_url = "https://pf.jnu.ac.kr"
@@ -97,11 +96,11 @@ def materials_engineering_crawling():
       isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 💎 고분자융합소재공학부 알림 발송")
       pprint.pprint(post)
-      send_message("고분자융합소재공학부", post['title'], isTrue_users, post['url'])
+      send_topic_message("고분자융합소재공학부", post['title'], isTrue_users, post['url'], 'pf')
   else:
     print(f"{today} : 💎 고분자융합소재공학부 새로운 공지 없음")
 
-# 기계공학부
+# 기계공학부, mech
 def mechanical_engineering_crawling():
   today = str(datetime.now())
   base_url = "https://mech.jnu.ac.kr"
@@ -115,11 +114,11 @@ def mechanical_engineering_crawling():
       isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : ⚙️ 기계공학부 알림 발송")
       pprint.pprint(post)
-      send_message("기계공학부", post['title'], isTrue_users, post['url'])
+      send_topic_message("기계공학부", post['title'], isTrue_users, post['url'], 'mech')
   else:
     print(f"{today} : ⚙️ 기계공학부 새로운 공지 없음")
 
-# 생물공학과
+# 생물공학과, bte
 def biotechnology_crawling():
   today = str(datetime.now())
   base_url = "https://bte.jnu.ac.kr"
@@ -133,11 +132,11 @@ def biotechnology_crawling():
       isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 🐣 생물공학과 알림 발송")
       pprint.pprint(post)
-      send_message("생물공학과", post['title'], isTrue_users, post['url'])
+      send_topic_message("생물공학과", post['title'], isTrue_users, post['url'], 'bte')
   else:
     print(f"{today} : 🐣 생물공학과 새로운 공지 없음")
 
-# 소프트웨어공학과
+# 소프트웨어공학과, sw
 def software_engineering_crawling():
   today = str(datetime.now())
   base_url = "https://sw.jnu.ac.kr"
@@ -152,11 +151,11 @@ def software_engineering_crawling():
       isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 💻 소프트웨어공학과 알림 발송")
       pprint.pprint(post)
-      send_message("소프트웨어공학과", post['title'], isTrue_users, post['url'])
+      send_topic_message("소프트웨어공학과", post['title'], isTrue_users, post['url'], 'sw')
   else:
     print(f"{today} : 💻 소프트웨어공학과 새로운 공지 없음")
 
-# 공과대학
+# 공과대학, eng
 def engineering_crawling():
   today = str(datetime.now())
   base_url = "https://eng.jnu.ac.kr"
@@ -171,6 +170,6 @@ def engineering_crawling():
       isTrue_users = Device.objects.filter(setting__college__in=isTrue_college)
       print(f"{today} : 🛠️ 공과대학 알림 발송")
       pprint.pprint(post)
-      send_message("공과대학", post['title'], isTrue_users, post['url'])
+      send_topic_message("공과대학", post['title'], isTrue_users, post['url'], 'eng')
   else:
     print(f"{today} : 🛠️ 공과대학 새로운 공지 없음")

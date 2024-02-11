@@ -4,7 +4,7 @@ import pprint
 from datetime import datetime
 
 from .models import Device, Notification
-from .models import Department, Architecture, MaterialsEngineering, MechanicalEngineering, Biotechnology, SoftwareEngineering
+from .models import Department, Architecture, MaterialsEngineering, MechanicalEngineering, Biotechnology, MaterialsScienceEngineering, SoftwareEngineering
 from .models import College, Engineering
 
 from firebase_admin import messaging
@@ -32,6 +32,7 @@ def crawling_job():
   materials_engineering_crawling()
   mechanical_engineering_crawling()
   biotechnology_crawling()
+  materials_science_engineering_crawling()
   software_engineering_crawling()
   engineering_crawling()
 
@@ -75,10 +76,10 @@ def architecture_crawling():
     for post in reversed(posts):
       Architecture.objects.create(num=post['num'], title=post['title'])
       isTrue_departments = Department.objects.filter(architecture=True)
-      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_devices = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 🏠 건축학부 알림 발송")
       pprint.pprint(post)
-      send_topic_message("건축학부", post['title'], isTrue_users, post['url'], 'archi')
+      send_topic_message("건축학부", post['title'], isTrue_devices, post['url'], 'archi')
   else:
     print(f"{today} : 🏠 건축학부 새로운 공지 없음")
 
@@ -93,10 +94,10 @@ def materials_engineering_crawling():
     for post in reversed(posts):
       MaterialsEngineering.objects.create(num=post['num'], title=post['title'])
       isTrue_departments = Department.objects.filter(materials_engineering=True)
-      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_devices = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 💎 고분자융합소재공학부 알림 발송")
       pprint.pprint(post)
-      send_topic_message("고분자융합소재공학부", post['title'], isTrue_users, post['url'], 'pf')
+      send_topic_message("고분자융합소재공학부", post['title'], isTrue_devices, post['url'], 'pf')
   else:
     print(f"{today} : 💎 고분자융합소재공학부 새로운 공지 없음")
 
@@ -111,10 +112,10 @@ def mechanical_engineering_crawling():
     for post in reversed(posts):
       MechanicalEngineering.objects.create(num=post['num'], title=post['title'])
       isTrue_departments = Department.objects.filter(mechanical_engineering=True)
-      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_devices = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : ⚙️ 기계공학부 알림 발송")
       pprint.pprint(post)
-      send_topic_message("기계공학부", post['title'], isTrue_users, post['url'], 'mech')
+      send_topic_message("기계공학부", post['title'], isTrue_devices, post['url'], 'mech')
   else:
     print(f"{today} : ⚙️ 기계공학부 새로운 공지 없음")
 
@@ -129,12 +130,30 @@ def biotechnology_crawling():
     for post in reversed(posts):
       Biotechnology.objects.create(num=post['num'], title=post['title'])
       isTrue_departments = Department.objects.filter(biotechnology=True)
-      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_devices = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 🐣 생물공학과 알림 발송")
       pprint.pprint(post)
-      send_topic_message("생물공학과", post['title'], isTrue_users, post['url'], 'bte')
+      send_topic_message("생물공학과", post['title'], isTrue_devices, post['url'], 'bte')
   else:
     print(f"{today} : 🐣 생물공학과 새로운 공지 없음")
+
+# 신소재공학부, mse
+def materials_science_engineering_crawling():
+  today = str(datetime.now())
+  base_url = "https://mse.jnu.ac.kr/mse/index.do"
+  url = 'https://mse.jnu.ac.kr/mse/16863/subview.do'
+  posts = general_crawling(base_url=base_url, url=url, department_model=MaterialsScienceEngineering)
+  
+  if len(posts) > 0:
+    for post in reversed(posts):
+      MaterialsScienceEngineering.objects.create(num=post['num'], title=post['title'])
+      isTrue_departments = Department.objects.filter(materials_science_engineering=True)
+      isTrue_devices = Device.objects.filter(setting__department__in=isTrue_departments)
+      print(f"{today} : ⚗️ 신소재공학부 알림 발송")
+      pprint.pprint(post)
+      send_topic_message("신소재공학부", post['title'], isTrue_devices, post['url'], 'mse')
+  else:
+    print(f"{today} : ⚗️ 신소재공학부 새로운 공지 없음")
 
 # 소프트웨어공학과, sw
 def software_engineering_crawling():
@@ -148,10 +167,10 @@ def software_engineering_crawling():
       SoftwareEngineering.objects.create(num=post['num'], title=post['title'])
       # 소프트웨어공학과를 구독한 User에게 알림 발송
       isTrue_departments = Department.objects.filter(software_engineering=True)
-      isTrue_users = Device.objects.filter(setting__department__in=isTrue_departments)
+      isTrue_devices = Device.objects.filter(setting__department__in=isTrue_departments)
       print(f"{today} : 💻 소프트웨어공학과 알림 발송")
       pprint.pprint(post)
-      send_topic_message("소프트웨어공학과", post['title'], isTrue_users, post['url'], 'sw')
+      send_topic_message("소프트웨어공학과", post['title'], isTrue_devices, post['url'], 'sw')
   else:
     print(f"{today} : 💻 소프트웨어공학과 새로운 공지 없음")
 
@@ -167,9 +186,9 @@ def engineering_crawling():
       Engineering.objects.create(num=post['num'], title=post['title'])
       # 공과대학을 구독한 User에게 알림 발송
       isTrue_college =College.objects.filter(engineering=True)
-      isTrue_users = Device.objects.filter(setting__college__in=isTrue_college)
+      isTrue_devices = Device.objects.filter(setting__college__in=isTrue_college)
       print(f"{today} : 🛠️ 공과대학 알림 발송")
       pprint.pprint(post)
-      send_topic_message("공과대학", post['title'], isTrue_users, post['url'], 'eng')
+      send_topic_message("공과대학", post['title'], isTrue_devices, post['url'], 'eng')
   else:
     print(f"{today} : 🛠️ 공과대학 새로운 공지 없음")

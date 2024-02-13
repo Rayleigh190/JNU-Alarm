@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Device, Setting, Basic, College, Department
+from .models import Device, Notification, Setting, Basic, College, Department
 
 
 class DeviceCreateSerializer(serializers.ModelSerializer):
@@ -7,6 +7,15 @@ class DeviceCreateSerializer(serializers.ModelSerializer):
     model = Device
     fields = [
       'device_id',
+    ]
+
+class NotificationSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Notification
+    fields = [
+      'title',
+      'body',
+      'link',
     ]
 
 class BasicSerializer(serializers.ModelSerializer):

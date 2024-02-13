@@ -24,6 +24,13 @@ def send_topic_message(title, body, devices, link, topic):
   print('Successfully sent message:', response)
 
   for device in devices:
+    notifications = Notification.objects.filter(device=device)
+    if notifications.count() >= 19:
+        # Delete the oldest notification
+        oldest_notification = notifications.order_by('created_at').first()
+        oldest_notification.delete()
+
+    # Create and save new notification
     Notification.objects.create(device=device, title=title, body=body, link=link)
   return
 

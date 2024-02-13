@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from .models import Device, Setting, Basic, College, Department
-from .serializer import DeviceCreateSerializer, BasicSerializer, SettingSerializer, CollegeSerializer, DepartmentSerializer
+from .models import Device, Notification, Setting, Basic, College, Department
+from .serializer import DeviceCreateSerializer, NotificationSerializer, BasicSerializer, SettingSerializer, CollegeSerializer, DepartmentSerializer
 
 
 class DeivceView(APIView):
@@ -36,6 +36,15 @@ class DeivceView(APIView):
     
     result_dic = {'success': False, 'response': None, 'error': None}
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
+  
+class NotificationView(APIView):
+  def get(self, request, *args, **kwargs):
+    device_id = request.GET.get('device-id')
+    device = get_object_or_404(Device, device_id=device_id)
+    notifications = Notification.objects.filter(device=device)
+    notifications_serializer = NotificationSerializer(reversed(notifications), many=True)
+    result_dic = {'success': True, 'response': notifications_serializer.data, 'error': None}
+    return Response(result_dic, status=status.HTTP_200_OK)
   
 class SettingBasicView(APIView):
   """

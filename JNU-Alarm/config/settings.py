@@ -147,7 +147,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONJOBS = [
-    ('*/1 * * * *', 'alarm.cron.crawling_job', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 ')
+    ('*/1 * * * *', 'alarm.crons.crawling_job', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 ')
 ]
 
 ## FCM

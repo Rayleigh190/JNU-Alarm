@@ -21,7 +21,7 @@ class DeivceView(APIView):
 
     # If the device already exists, update the fcm_token
     if Device.objects.filter(device_id=device_id).exists():
-      result_dic = {'success': True, 'response': None, 'error': None}
+      result_dic = {'success': True, 'response': "login", 'error': None}
       return Response(result_dic, status=status.HTTP_200_OK)
     
     # If the device does not exist, create a new device
@@ -31,7 +31,7 @@ class DeivceView(APIView):
       college = College.objects.create()
       setting = Setting.objects.create(basic=basic, college=college, department=department)
       Device.objects.create(device_id=device_id, setting=setting)
-      result_dic = {'success': True, 'response': None, 'error': None}
+      result_dic = {'success': True, 'response': "registration", 'error': None}
       return Response(result_dic, status=status.HTTP_200_OK)
     
     result_dic = {'success': False, 'response': None, 'error': None}

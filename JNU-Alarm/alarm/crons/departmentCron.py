@@ -1,96 +1,9 @@
-import requests
-from bs4 import BeautifulSoup
 import pprint
 from datetime import datetime
+from .baseCron import general_crawling, first_crawling, send_topic_message
 
-from .models import Device, Notification
-from .models import Department, Architecture, MaterialsEngineering, MechanicalEngineering, Biotechnology, MaterialsScienceEngineering, SoftwareEngineering
-from .models import College, Engineering
+from ..models import Device, Department, Architecture, MaterialsEngineering, MechanicalEngineering, Biotechnology, MaterialsScienceEngineering, SoftwareEngineering
 
-from firebase_admin import messaging
-
-def send_topic_message(title, body, devices, link, topic):
-  # See documentation on defining a message payload.
-  message = messaging.Message(
-      notification=messaging.Notification(
-        title=title,
-        body=body,
-      ),
-      topic=topic,
-  )
-  # Send a message to the devices subscribed to the provided topic.
-  response = messaging.send(message)
-  # Response is a message ID string.
-  print('Successfully sent message:', response)
-
-  for device in devices:
-    notifications = Notification.objects.filter(device=device)
-    if notifications.count() >= 19:
-        # Delete the oldest notification
-        oldest_notification = notifications.order_by('created_at').first()
-        oldest_notification.delete()
-
-    # Create and save new notification
-    Notification.objects.create(device=device, title=title, body=body, link=link)
-  return
-
-def crawling_job():
-  architecture_crawling()
-  materials_engineering_crawling()
-  mechanical_engineering_crawling()
-  biotechnology_crawling()
-  materials_science_engineering_crawling()
-  software_engineering_crawling()
-  engineering_crawling()
-
-def general_crawling(base_url, url, department_model):
-  response = requests.get(url)
-  soup = BeautifulSoup(response.text, 'html.parser')
-  posts = []
-  last_post = department_model.objects.last()
-  for tr in soup.findAll('tr', attrs={'class':''}):
-    try:
-      if tr.find('td') is None:
-        continue
-      num = int(tr.find('td', attrs={'class':'td-num'}).text)
-      if num <= last_post.num:
-        break
-      else:
-        td = tr.find('td', attrs={'class':'td-subject'})
-        title = td.find('strong').text
-        href = td.find('a')['href']
-        postUrl = base_url + href
-        post_data = {
-          'num': num,
-          'title': title,
-          'url': postUrl
-        }
-        posts.append(post_data)
-    except Exception as e:
-      print("크롤링중 예외 발생", e)
-      pass
-  return posts
-
-def first_crawling(base_url, url, department_model):
-  response = requests.get(url)
-  soup = BeautifulSoup(response.text, 'html.parser')
-  tr = soup.findAll('tr', attrs={'class':''})[1]
-  try:
-    num = int(tr.find('td', attrs={'class':'td-num'}).text)
-    td = tr.find('td', attrs={'class':'td-subject'})
-    title = td.find('strong').text
-    href = td.find('a')['href']
-    postUrl = base_url + href
-    post_data = {
-      'num': num,
-      'title': title,
-      'url': postUrl
-    }
-    pprint.pprint(post_data)
-    department_model.objects.create(num=post_data['num'], title=post_data['title'])
-  except Exception as e:
-    print("첫 크롤링중 예외 발생", e)
-    pass
 
 ## 학과
 # 건축학부, archi
@@ -225,26 +138,3 @@ def software_engineering_crawling():
       send_topic_message("소프트웨어공학과", post['title'], isTrue_devices, post['url'], 'sw')
   else:
     print(f"{today} : 소프트웨어공학과 새로운 공지 없음")
-
-# 공과대학, eng
-def engineering_crawling():
-  today = str(datetime.now())
-  base_url = "https://eng.jnu.ac.kr"
-  url = 'https://eng.jnu.ac.kr/eng/7343/subview.do'
-  if Engineering.objects.count() == 0:
-    print(f"{today} : 공과대학 첫 크롤링")
-    first_crawling(base_url=base_url, url=url, department_model=Engineering)
-    return
-  posts = general_crawling(base_url=base_url, url=url, department_model=Engineering)
-  
-  if len(posts) > 0:
-    for post in reversed(posts):
-      Engineering.objects.create(num=post['num'], title=post['title'])
-      # 공과대학을 구독한 User에게 알림 발송
-      isTrue_college =College.objects.filter(engineering=True)
-      isTrue_devices = Device.objects.filter(setting__college__in=isTrue_college)
-      print(f"{today} : 공과대학 알림 발송")
-      pprint.pprint(post)
-      send_topic_message("공과대학", post['title'], isTrue_devices, post['url'], 'eng')
-  else:
-    print(f"{today} : 공과대학 새로운 공지 없음")

@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from .models import Device, Notification, Setting, BasicSet, CollegeSet, DepartmentSet
-from .serializer import DeviceCreateSerializer, NotificationSerializer, BasicSetSerializer, SettingSerializer, CollegeSetSerializer, DepartmentSetSerializer
+from .serializer import DeviceCreateSerializer, NotificationSerializer, BasicSetSerializer, CollegeSetSerializer, DepartmentSetSerializer
 
 
 class DeivceView(APIView):
@@ -46,7 +46,7 @@ class NotificationView(APIView):
     result_dic = {'success': True, 'response': notifications_serializer.data, 'error': None}
     return Response(result_dic, status=status.HTTP_200_OK)
   
-class SettingBasicView(APIView):
+class BasicSetView(APIView):
   """
   * 디바이스 기본 설정 조회
   * 디바이스 기본 설정 정보를 받아 올 수 있다.
@@ -62,26 +62,18 @@ class SettingBasicView(APIView):
   * 디바이스 기본 설정 수정
   * 디바이스 기본 설정 정보를 수정할 수 있다.
   """
-  def post(self, request, *args, **kwargs):
+  def patch(self, request, *args, **kwargs):
     device_id = request.GET.get('device-id')
     device = get_object_or_404(Device, device_id=device_id)
-    serializer = BasicSetSerializer(data=request.data)
 
+    serializer = BasicSetSerializer(instance=device.setting.basic, data=request.data, partial=True)
     if serializer.is_valid():
-      # Update data
-      device.setting.basic.weather = serializer.validated_data.get('weather')
-      device.setting.basic.emergency = serializer.validated_data.get('emergency')
-      device.setting.basic.save()
-      
-      res_serializer = BasicSetSerializer(device.setting.basic)
-    
-      result_dic = {'success': True, 'response': res_serializer.data, 'error': None}
+      serializer.save()
+      result_dic = {'success': True, 'response': None, 'error': None}
       return Response(result_dic, status=status.HTTP_200_OK)
-
     result_dic = {'success': False, 'response': None, 'error': serializer.errors}
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
   
-
 class DepartmentSetView(APIView):
   """
   * 디바이스 학과 설정 조회

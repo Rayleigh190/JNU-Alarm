@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Device, Notification, Setting, BasicSet, CollegeSet, DepartmentSet
+from .models import Device, Notification, BasicSet, CollegeSet, DepartmentSet
 
 
 class DeviceCreateSerializer(serializers.ModelSerializer):
@@ -32,8 +32,3 @@ class DepartmentSetSerializer(serializers.ModelSerializer):
   class Meta:
     model = DepartmentSet
     exclude = ['id']
-
-class SettingSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = Setting
-    fields = '__all__'

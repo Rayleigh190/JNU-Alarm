@@ -4,8 +4,8 @@ from rest_framework.views import APIView
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
-from .models import Device, Notification, Setting, Basic, College, Department
-from .serializer import DeviceCreateSerializer, NotificationSerializer, BasicSerializer, SettingSerializer, CollegeSerializer, DepartmentSerializer
+from .models import Device, Notification, Setting, BasicSet, CollegeSet, DepartmentSet
+from .serializer import DeviceCreateSerializer, NotificationSerializer, BasicSetSerializer, SettingSerializer, CollegeSetSerializer, DepartmentSetSerializer
 
 
 class DeivceView(APIView):
@@ -26,9 +26,9 @@ class DeivceView(APIView):
     
     # If the device does not exist, create a new device
     if serializer.is_valid():
-      basic = Basic.objects.create()
-      department = Department.objects.create()
-      college = College.objects.create()
+      basic = BasicSet.objects.create()
+      department = DepartmentSet.objects.create()
+      college = CollegeSet.objects.create()
       setting = Setting.objects.create(basic=basic, college=college, department=department)
       Device.objects.create(device_id=device_id, setting=setting)
       result_dic = {'success': True, 'response': "registration", 'error': None}
@@ -54,7 +54,7 @@ class SettingBasicView(APIView):
   def get(self, request, *args, **kwargs):
     device_id = request.GET.get('device-id')
     device = get_object_or_404(Device, device_id=device_id)
-    basic_serializer = BasicSerializer(device.setting.basic)
+    basic_serializer = BasicSetSerializer(device.setting.basic)
     result_dic = {'success': True, 'response': basic_serializer.data, 'error': None}
     return Response(result_dic, status=status.HTTP_200_OK)
     
@@ -65,7 +65,7 @@ class SettingBasicView(APIView):
   def post(self, request, *args, **kwargs):
     device_id = request.GET.get('device-id')
     device = get_object_or_404(Device, device_id=device_id)
-    serializer = BasicSerializer(data=request.data)
+    serializer = BasicSetSerializer(data=request.data)
 
     if serializer.is_valid():
       # Update data
@@ -73,7 +73,7 @@ class SettingBasicView(APIView):
       device.setting.basic.emergency = serializer.validated_data.get('emergency')
       device.setting.basic.save()
       
-      res_serializer = BasicSerializer(device.setting.basic)
+      res_serializer = BasicSetSerializer(device.setting.basic)
     
       result_dic = {'success': True, 'response': res_serializer.data, 'error': None}
       return Response(result_dic, status=status.HTTP_200_OK)
@@ -89,7 +89,7 @@ class SettingDepartmentView(APIView):
   def get(self, request, *args, **kwargs):
     device_id = request.GET.get('device-id')
     device = get_object_or_404(Device, device_id=device_id)
-    department_serializer = DepartmentSerializer(device.setting.department)
+    department_serializer = DepartmentSetSerializer(device.setting.department)
     result_dic = {'success': True, 'response': department_serializer.data, 'error': None}
     return Response(result_dic, status=status.HTTP_200_OK)
     
@@ -100,7 +100,7 @@ class SettingDepartmentView(APIView):
   def post(self, request, *args, **kwargs):
     device_id = request.GET.get('device-id')
     device = get_object_or_404(Device, device_id=device_id)
-    serializer = DepartmentSerializer(data=request.data)
+    serializer = DepartmentSetSerializer(data=request.data)
 
     if serializer.is_valid():
       # Update data
@@ -109,7 +109,7 @@ class SettingDepartmentView(APIView):
       department.software_engineering = department_data.get('software_engineering')
       department.electric_engineering = department_data.get('electric_engineering')
       department.save()
-      res_serializer = DepartmentSerializer(department)
+      res_serializer = DepartmentSetSerializer(department)
     
       result_dic = {'success': True, 'response': res_serializer.data, 'error': None}
       return Response(result_dic, status=status.HTTP_200_OK)

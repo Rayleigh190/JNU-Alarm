@@ -102,3 +102,32 @@ class DepartmentSetView(APIView):
         return Response(result_dic, status=status.HTTP_200_OK)
     result_dic = {'success': False, 'response': None, 'error': serializer.errors}
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
+  
+class CollegeSetView(APIView):
+  """
+  * 디바이스 단과대 설정 조회
+  * 디바이스 단과대 설정 정보를 받아 올 수 있다.
+  """
+  def get(self, request, *args, **kwargs):
+    device_id = request.GET.get('device-id')
+    device = get_object_or_404(Device, device_id=device_id)
+    serializer = CollegeSetSerializer(device.setting.college)
+    result_dic = {'success': True, 'response': serializer.data, 'error': None}
+    return Response(result_dic, status=status.HTTP_200_OK)
+
+  """
+  * 디바이스 단과대 설정 수정
+  * 디바이스 단과대 설정 정보를 수정할 수 있다.
+  """
+  def patch(self, request, *args, **kwargs):
+    device_id = request.GET.get('device-id')
+    device = get_object_or_404(Device, device_id=device_id)
+    
+    serializer = CollegeSetSerializer(instance=device.setting.college, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        result_dic = {'success': True, 'response': None, 'error': None}
+        # return Response(serializer.data)
+        return Response(result_dic, status=status.HTTP_200_OK)
+    result_dic = {'success': False, 'response': None, 'error': serializer.errors}
+    return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)

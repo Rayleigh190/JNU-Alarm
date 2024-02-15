@@ -81,7 +81,8 @@ class SettingBasicView(APIView):
     result_dic = {'success': False, 'response': None, 'error': serializer.errors}
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
   
-class SettingDepartmentView(APIView):
+
+class DepartmentSetView(APIView):
   """
   * 디바이스 학과 설정 조회
   * 디바이스 학과 설정 정보를 받아 올 수 있다.
@@ -92,27 +93,20 @@ class SettingDepartmentView(APIView):
     department_serializer = DepartmentSetSerializer(device.setting.department)
     result_dic = {'success': True, 'response': department_serializer.data, 'error': None}
     return Response(result_dic, status=status.HTTP_200_OK)
-    
+
   """
   * 디바이스 학과 설정 수정
   * 디바이스 학과 설정 정보를 수정할 수 있다.
   """
-  def post(self, request, *args, **kwargs):
+  def patch(self, request, *args, **kwargs):
     device_id = request.GET.get('device-id')
     device = get_object_or_404(Device, device_id=device_id)
-    serializer = DepartmentSetSerializer(data=request.data)
-
-    if serializer.is_valid():
-      # Update data
-      department_data = serializer.validated_data
-      department = device.setting.department
-      department.software_engineering = department_data.get('software_engineering')
-      department.electric_engineering = department_data.get('electric_engineering')
-      department.save()
-      res_serializer = DepartmentSetSerializer(department)
     
-      result_dic = {'success': True, 'response': res_serializer.data, 'error': None}
-      return Response(result_dic, status=status.HTTP_200_OK)
-
+    serializer = DepartmentSetSerializer(instance=device.setting.department, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        result_dic = {'success': True, 'response': None, 'error': None}
+        # return Response(serializer.data)
+        return Response(result_dic, status=status.HTTP_200_OK)
     result_dic = {'success': False, 'response': None, 'error': serializer.errors}
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)

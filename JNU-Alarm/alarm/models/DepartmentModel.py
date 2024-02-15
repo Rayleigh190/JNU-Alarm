@@ -57,7 +57,7 @@ class DepartmentSet(models.Model):
   politics = models.BooleanField(default=False) # 정치외교학과
   sociology = models.BooleanField(default=False) # 사회학과
   psyche = models.BooleanField(default=False) # 심리학과
-  # list = models.BooleanField(default=False) # 문헌정보학과
+  # list = models.BooleanField(default=False) # 문헌정보학과 > 접속 안됨
   comm = models.BooleanField(default=False) # 신문방송학과
   geo = models.BooleanField(default=False) # 지리학과
   illyu = models.BooleanField(default=False) # 문화인류고고학과
@@ -66,16 +66,11 @@ class DepartmentSet(models.Model):
   welfare = models.BooleanField(default=False) # 생활복지학과
   fn = models.BooleanField(default=False) # 식품영양과학부
   clothing = models.BooleanField(default=False) # 의류학과
-  ## 수의과대학 > 단과대
-  # vetmed = models.BooleanField(default=False) # 수의과(수의예과, 수의학과)
-  ## 약학대학 > 단과대
-  # pharmacy = models.BooleanField(default=False) # 약학부
   ## 예술대학
   fineart = models.BooleanField(default=False) # 미술학과
   music = models.BooleanField(default=False) # 음악학과
   koreanmusic = models.BooleanField(default=False) # 국악학과
   design = models.BooleanField(default=False) # 디자인학과
-  ## 의과대학 > 단과대
   ## 인문대학
   korean = models.BooleanField(default=False) # 국어국문학과
   ell = models.BooleanField(default=False) # 영어영문학과
@@ -95,7 +90,6 @@ class DepartmentSet(models.Model):
   biology = models.BooleanField(default=False) # 생물학과
   sbst = models.BooleanField(default=False) # 생명과학기술학부
   ## AI융합대학
-  # cvg = models.BooleanField(default=False) # 융합전공 > 단과대
   aisw = models.BooleanField(default=False) # 인공지능학부
   bigdata = models.BooleanField(default=False) # 빅데이터융합학과
   imob = models.BooleanField(default=False) # 지능형모빌리티융합학과
@@ -108,7 +102,6 @@ class DepartmentSet(models.Model):
   mechauto = models.BooleanField(default=False) # 기계설계공학과
   mechatronics = models.BooleanField(default=False) # 메카트로닉스공학과
   refri06 = models.BooleanField(default=False) # 냉동공조공학과
-  #  = models.BooleanField(default=False) # 해양토목공학과 > 사라짐
   environ = models.BooleanField(default=False) # 환경시스템공학과
   biotech = models.BooleanField(default=False) # 융합생명공학과
   chemeng = models.BooleanField(default=False) # 화공생명공학과
@@ -136,7 +129,8 @@ class DepartmentSet(models.Model):
   marine = models.BooleanField(default=False) # 해양생산관리학과
   ocean89 = models.BooleanField(default=False) # 해양융합과학과
   dfmitl = models.BooleanField(default=False) # 수산해양산업관광레저융합학과(계약학과)
-
+  ## 창의융합학부(여수)
+  fcc = models.BooleanField(default=False) # 창의융합학부
 
 class DepartmentPost(models.Model):
   topic = models.TextField()

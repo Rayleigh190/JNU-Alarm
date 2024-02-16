@@ -10,3 +10,13 @@ class NotificationSerializer(serializers.ModelSerializer):
       'link',
       'created_at',
     ]
+
+class SendNotificationSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Notification
+    fields = [
+      'title',
+      'body',
+      'topic',
+      'link',
+    ]

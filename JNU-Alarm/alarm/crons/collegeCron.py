@@ -1,5 +1,5 @@
 from .baseCron import general_bbs_crawling, UniversityPostData
-from ..models import CollegePost, CollegeSet
+from ..models import CollegePost
 
 college_data_list = [
   UniversityPostData(topic='cba', base_url="https://cba.jnu.ac.kr", bbs_url="https://cba.jnu.ac.kr/cba/13919/subview.do", name="경영대학"),
@@ -23,4 +23,4 @@ college_data_list = [
 def colleges_crawling():
   print("\n> 단과대 크롤링")
   for college_data in college_data_list:
-    general_bbs_crawling(post_data=college_data, post_model=CollegePost, set_model=CollegeSet)
+    general_bbs_crawling(post_data=college_data, post_model=CollegePost)

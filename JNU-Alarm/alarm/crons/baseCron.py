@@ -1,14 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 import pprint
+from datetime import datetime
 from urllib3.util.retry import Retry
 from ..models import Notification
 
 from firebase_admin import messaging
 from dataclasses import dataclass 
 
-from datetime import datetime
-from ..models import Device
 
 @dataclass 
 class UniversityPostData: 
@@ -17,7 +16,7 @@ class UniversityPostData:
   bbs_url: str
   name: str
 
-def send_topic_message(title, body, devices, link, topic):
+def send_topic_message(title, body, link, topic):
   # See documentation on defining a message payload.
   message = messaging.Message(
       notification=messaging.Notification(
@@ -31,15 +30,8 @@ def send_topic_message(title, body, devices, link, topic):
   # Response is a message ID string.
   print('Successfully sent message:', response)
 
-  for device in devices:
-    notifications = Notification.objects.filter(device=device)
-    if notifications.count() >= 19:
-        # Delete the oldest notification
-        oldest_notification = notifications.order_by('created_at').first()
-        oldest_notification.delete()
-
-    # Create and save new notification
-    Notification.objects.create(device=device, title=title, body=body, link=link)
+  # Create and save new notification
+  Notification.objects.create(topic=topic, title=title, body=body, link=link)
   return
 
 headers = {
@@ -115,7 +107,7 @@ def first_crawling(topic, base_url, bbs_url, post_model):
     print(f"first_crawling() : {topic} 첫 크롤링중 예외 발생", e)
     pass
 
-def general_bbs_crawling(post_data: UniversityPostData, post_model, set_model):
+def general_bbs_crawling(post_data: UniversityPostData, post_model):
   today = str(datetime.now())
   topic = post_data.topic
   base_url = post_data.base_url
@@ -130,11 +122,9 @@ def general_bbs_crawling(post_data: UniversityPostData, post_model, set_model):
   if len(posts) > 0:
     for post in reversed(posts):
       post_model.objects.create(topic=topic, num=post['num'], title=post['title'])
-      isTrue_department_set = set_model.objects.filter(**{topic: True})
-      isTrue_devices = Device.objects.filter(setting__department__in=isTrue_department_set)
       print(f"{today} : {name} 알림 발송")
       pprint.pprint(post)
-      send_topic_message(name, post['title'], isTrue_devices, post['url'], topic)
+      send_topic_message(name, post['title'], post['url'], topic)
   else:
     print(f"{today} : {name} 새로운 공지 없음")
 

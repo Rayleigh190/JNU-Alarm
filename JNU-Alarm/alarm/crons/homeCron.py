@@ -1,5 +1,5 @@
 from .baseCron import UniversityPostData, send_topic_message
-from ..models import HomePost, HomeSet
+from ..models import HomePost
 
 import requests
 from bs4 import BeautifulSoup
@@ -7,7 +7,6 @@ import pprint
 from urllib3.util.retry import Retry
 
 from datetime import datetime
-from ..models import Device
 
 
 home_data_list = [
@@ -88,7 +87,7 @@ def home_first_crawling(topic, base_url, bbs_url, post_model):
     print(f"home_first_crawling() : {topic} 첫 크롤링중 예외 발생", e)
     pass
 
-def home_bbs_crawling(post_data: UniversityPostData, post_model, set_model):
+def home_bbs_crawling(post_data: UniversityPostData, post_model):
   today = str(datetime.now())
   topic = post_data.topic
   base_url = post_data.base_url
@@ -103,15 +102,13 @@ def home_bbs_crawling(post_data: UniversityPostData, post_model, set_model):
   if len(posts) > 0:
     for post in reversed(posts):
       post_model.objects.create(topic=topic, num=post['num'], title=post['title'])
-      isTrue_department_set = set_model.objects.filter(**{topic: True})
-      isTrue_devices = Device.objects.filter(setting__department__in=isTrue_department_set)
       print(f"{today} : {name} 알림 발송")
       pprint.pprint(post)
-      send_topic_message(name, post['title'], isTrue_devices, post['url'], topic)
+      send_topic_message(name, post['title'], post['url'], topic)
   else:
     print(f"{today} : {name} 새로운 공지 없음")
 
 def homes_crawling():
   print("\n> 홈페이지 크롤링")
   for home_data in home_data_list:
-    home_bbs_crawling(post_data=home_data, post_model=HomePost, set_model=HomeSet)
+    home_bbs_crawling(post_data=home_data, post_model=HomePost)

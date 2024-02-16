@@ -1,5 +1,5 @@
 from .baseCron import general_bbs_crawling, UniversityPostData
-from ..models import DepartmentSet, DepartmentPost
+from ..models import DepartmentPost
 
 department_data_list = [
   ## 간호대학
@@ -132,4 +132,4 @@ department_data_list = [
 def departments_crawling():
   print("\n> 학과 크롤링")
   for department_data in department_data_list:
-    general_bbs_crawling(post_data=department_data, post_model=DepartmentPost, set_model=DepartmentSet)
+    general_bbs_crawling(post_data=department_data, post_model=DepartmentPost)

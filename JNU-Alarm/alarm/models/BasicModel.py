@@ -1,6 +1,11 @@
 from django.db import models
 
-## 기본
-class BasicSet(models.Model):
-  weather = models.BooleanField(default=False)  # 날씨
-  emergency = models.BooleanField(default=False)  # 긴급
+class Notification(models.Model):
+  topic = models.TextField()
+  title = models.TextField()
+  body = models.TextField()
+  link = models.URLField()
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return self.title

@@ -21,6 +21,6 @@ college_data_list = [
 ]
 
 def colleges_crawling():
-  print("> 단과대 크롤링")
+  print("\n> 단과대 크롤링")
   for college_data in college_data_list:
     general_bbs_crawling(post_data=college_data, post_model=CollegePost, set_model=CollegeSet)

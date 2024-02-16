@@ -130,6 +130,6 @@ department_data_list = [
 ]
 
 def departments_crawling():
-  print("> 학과 크롤링")
+  print("\n> 학과 크롤링")
   for department_data in department_data_list:
     general_bbs_crawling(post_data=department_data, post_model=DepartmentPost, set_model=DepartmentSet)

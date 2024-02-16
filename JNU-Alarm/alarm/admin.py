@@ -4,7 +4,7 @@ from django.contrib import admin
 from .models import Notification, CollegePost, DepartmentPost, HomePost
 
 admin.site.register([
-    Notification,
+    Notification, # 알림
 ])
 
 # 게시물

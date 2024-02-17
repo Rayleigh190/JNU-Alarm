@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from firebase_admin import messaging
-from .models import Notification
-from .serializer import NotificationSerializer, SendNotificationSerializer
+from .models import Notification, Question
+from .serializer import NotificationSerializer, SendNotificationSerializer, QuestionSerializer
 from .permissions import SendMessage
 
 
@@ -38,5 +38,16 @@ class SendTopicMessage(APIView):
       serializer.save()
       result_dic = {'success': True, 'response': None, 'error': None}
       return Response(result_dic, status=status.HTTP_200_OK)
-    result_dic = {'success': False, 'response': None, 'error': None}
+    result_dic = {'success': False, 'response': None, 'error': serializer.errors}
+    return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
+  
+
+class QuestionView(APIView):
+   def post(self, request, *args, **kwargs):
+    serializer = QuestionSerializer(data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      result_dic = {'success': True, 'response': None, 'error': None}
+      return Response(result_dic, status=status.HTTP_200_OK)
+    result_dic = {'success': False, 'response': None, 'error': serializer.errors}
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)

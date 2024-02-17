@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Notification, CollegePost, DepartmentPost, HomePost
+from .models import Notification, CollegePost, DepartmentPost, HomePost, BusinessPost
 
 admin.site.register([
     Notification, # 알림
@@ -12,4 +12,5 @@ admin.site.register([
     HomePost, # 홈페이지
     CollegePost, # 단과대
     DepartmentPost, # 학과
+    BusinessPost, # 사업단
 ])

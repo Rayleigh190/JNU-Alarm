@@ -26,3 +26,13 @@ class DepartmentPost(models.Model):
 
   def __str__(self):
     return self.title
+  
+class BusinessPost(models.Model):
+  topic = models.TextField()
+  num = models.PositiveIntegerField()
+  title = models.TextField()
+  link = models.URLField()
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return self.title

@@ -81,7 +81,7 @@ def home_first_crawling(topic, base_url, bbs_url, post_model):
       'url': postUrl
     }
     pprint.pprint(post_data)
-    post_model.objects.create(topic=topic, num=post_data['num'], title=post_data['title'])
+    post_model.objects.create(topic=topic, num=post_data['num'], title=post_data['title'], link=post_data['url'])
     print("저장완료")
   except Exception as e:
     print(f"home_first_crawling() : {topic} 첫 크롤링중 예외 발생", e)
@@ -101,7 +101,7 @@ def home_bbs_crawling(post_data: UniversityPostData, post_model):
   
   if len(posts) > 0:
     for post in reversed(posts):
-      post_model.objects.create(topic=topic, num=post['num'], title=post['title'])
+      post_model.objects.create(topic=topic, num=post['num'], title=post['title'], link=post['url'])
       print(f"{today} : {name} 알림 발송")
       pprint.pprint(post)
       send_topic_message(name, post['title'], post['url'], topic)

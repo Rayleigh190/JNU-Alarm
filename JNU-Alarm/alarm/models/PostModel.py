@@ -4,6 +4,7 @@ class HomePost(models.Model):
   topic = models.TextField()
   num = models.PositiveIntegerField()
   title = models.TextField()
+  link = models.URLField()
   created_at = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
@@ -13,6 +14,7 @@ class CollegePost(models.Model):
   topic = models.TextField()
   num = models.PositiveIntegerField()
   title = models.TextField()
+  link = models.URLField()
   created_at = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
@@ -22,6 +24,7 @@ class DepartmentPost(models.Model):
   topic = models.TextField()
   num = models.PositiveIntegerField()
   title = models.TextField()
+  link = models.URLField()
   created_at = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):

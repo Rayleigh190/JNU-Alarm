@@ -15,15 +15,13 @@ import os, environ
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 env = environ.Env(
     DEBUG=(bool, False)
 )
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-AUTH_USER_MODEL = 'auth.User'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -32,9 +30,9 @@ AUTH_USER_MODEL = 'auth.User'
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -45,9 +43,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'rest_framework_simplejwt',
     'django_crontab',
+    
     'users',
     'alarm',
 ]
@@ -97,12 +97,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -127,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
 TIME_ZONE = 'Asia/Seoul'
 
@@ -141,13 +141,26 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'auth.User'
+
+## CRONTAP
+from django.utils import timezone
+
+LOG_DIR = os.path.join(BASE_DIR, 'alarm/log/cron_log')
+
+# 오늘 날짜를 기반으로 로그 파일 이름 생성
+today_date = timezone.now().strftime('%Y-%m-%d')
+log_file_path = os.path.join(LOG_DIR, f'{today_date}.log')
+
 CRONJOBS = [
-    ('*/1 * * * *', 'alarm.crons.crawling_job', '>> '+os.path.join(BASE_DIR, 'config/log/cron.log')+' 2>&1 ')
+    ('*/1 * * * *', 'alarm.crons.crawling_job', f'>> {log_file_path} 2>&1 ')
 ]
 
 ## FCM

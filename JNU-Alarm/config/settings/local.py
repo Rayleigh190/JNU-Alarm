@@ -11,5 +11,7 @@ DATABASES = {
     }
 }
 
+WSGI_APPLICATION = 'config.wsgi.local.application'
+
 ## CRONTAB
 CRONTAB_DJANGO_SETTINGS_MODULE = 'config.settings.local'

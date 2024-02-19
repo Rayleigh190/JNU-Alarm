@@ -4,6 +4,7 @@
 myvenv/
 temp/
 JNU-Alarm/serviceAccountKey.json
+static
 
 ### Django ###
 *.log

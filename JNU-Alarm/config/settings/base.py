@@ -166,7 +166,8 @@ today_date = timezone.now().strftime('%Y-%m-%d')
 log_file_path = os.path.join(LOG_DIR, f'{today_date}.log')
 
 CRONJOBS = [
-    ('*/1 * * * *', 'alarm.crons.crawling_job', f'>> {log_file_path} 2>&1 ')
+    ('0 9-22/1 * * *', 'alarm.crons.crawling_job', f'>> {log_file_path} 2>&1 '), # 9~22시 사이 1시간 간격
+    # ('*/1 * * * *', 'alarm.crons.crawling_job', f'>> {log_file_path} 2>&1 '), # 1분 간격
 ]
 
 ## FCM

@@ -157,17 +157,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'auth.User'
 
 ## CRONTAP
-from django.utils import timezone
-
-LOG_DIR = os.path.join(BASE_DIR, 'alarm/log/cron_log')
-
-# 오늘 날짜를 기반으로 로그 파일 이름 생성
-today_date = timezone.now().strftime('%Y-%m-%d')
-log_file_path = os.path.join(LOG_DIR, f'{today_date}.log')
+from datetime import datetime 
 
 CRONJOBS = [
-    ('0 9-22/1 * * *', 'alarm.crons.crawling_job', f'>> {log_file_path} 2>&1 '), # 9~22시 사이 1시간 간격
-    # ('*/1 * * * *', 'alarm.crons.crawling_job', f'>> {log_file_path} 2>&1 '), # 1분 간격
+    ('0 9-22/1 * * *', 'alarm.crons.crawling_job', f'>> ' + os.path.join(BASE_DIR, f'alarm/log/cron_log/{datetime.now().strftime("%Y-%m-%d")}.log') + ' 2>&1 '), # 9~22시 사이 1시간 간격
+    # ('*/1 * * * *', 'alarm.crons.crawling_job', f'>> ' + os.path.join(BASE_DIR, f'alarm/log/cron_log/{datetime.now().strftime("%Y-%m-%d")}.log') + ' 2>&1 '), # 1분 간격
 ]
 
 ## FCM

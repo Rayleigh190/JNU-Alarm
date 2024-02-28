@@ -15,22 +15,35 @@ class UniversityPostData:
   base_url: str
   bbs_url: str
   name: str
-
+  
 def send_topic_message(title, body, link, topic):
-  # See documentation on defining a message payload.
-  message = messaging.Message(
-      notification=messaging.Notification(
-        title=title,
-        body=body,
-      ),
-      topic=topic,
+  android = messaging.AndroidConfig(
+    # priority='high',
+    notification=messaging.AndroidNotification(
+        sound='default',
+    ),
   )
-  # Send a message to the devices subscribed to the provided topic.
+
+  apns = messaging.APNSConfig(
+    payload=messaging.APNSPayload(
+      aps=messaging.Aps(
+        sound='default',
+      )
+    )
+  )
+
+  message = messaging.Message(
+    notification=messaging.Notification(
+      title=title,
+      body=body,
+    ),
+    android=android,
+    apns=apns,
+    topic=topic,
+  )
   response = messaging.send(message)
-  # Response is a message ID string.
   print('Successfully sent message:', response)
 
-  # Create and save new notification
   Notification.objects.create(topic=topic, title=title, body=body, link=link)
   return
 

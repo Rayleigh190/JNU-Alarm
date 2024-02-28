@@ -6,6 +6,7 @@ from firebase_admin import messaging
 from .models import Notification, Question
 from .serializer import NotificationSerializer, SendNotificationSerializer, QuestionSerializer
 from .permissions import SendMessage
+from .crons.baseCron import send_topic_message
 
 
 class NotificationView(APIView):
@@ -25,17 +26,13 @@ class SendTopicMessage(APIView):
   def post(self, request, *args, **kwargs):
     serializer = SendNotificationSerializer(data=request.data)
     if serializer.is_valid():
-      message = messaging.Message(
-        notification=messaging.Notification(
-          title=serializer.validated_data.get('title'),
-          body=serializer.validated_data.get('body'),
-        ),
-        topic=serializer.validated_data.get('topic'),
+      send_topic_message(
+        title=serializer.validated_data.get('title'),
+        body=serializer.validated_data.get('body'),
+        link=serializer.validated_data.get('link'),
+        topic=serializer.validated_data.get('topic')
       )
-      response = messaging.send(message)
-      print('Successfully sent message:', response)
-      
-      serializer.save()
+      # serializer.save()
       result_dic = {'success': True, 'response': None, 'error': None}
       return Response(result_dic, status=status.HTTP_200_OK)
     result_dic = {'success': False, 'response': None, 'error': serializer.errors}

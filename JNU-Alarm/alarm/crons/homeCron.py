@@ -3,6 +3,7 @@ from ..models import HomePost
 
 import requests
 from bs4 import BeautifulSoup
+import time
 import pprint
 from urllib3.util.retry import Retry
 
@@ -105,6 +106,7 @@ def home_bbs_crawling(post_data: UniversityPostData, post_model):
       print(f"{today} : {name} 알림 발송")
       pprint.pprint(post)
       send_topic_message(name, post['title'], post['url'], topic)
+      time.sleep(1)
   else:
     print(f"{today} : {name} 새로운 공지 없음")
 

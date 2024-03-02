@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pprint
+import time
 from datetime import datetime
 from urllib3.util.retry import Retry
 from ..models import Notification
@@ -41,8 +42,17 @@ def send_topic_message(title, body, link, topic):
     apns=apns,
     topic=topic,
   )
-  response = messaging.send(message)
-  print('Successfully sent message:', response)
+  
+  for _ in range(3):
+    try:
+      response = messaging.send(message)  # 메시지를 전송합니다.
+      print('Successfully sent message:', response)
+      break  # 성공적으로 메시지를 전송했을 경우 반복문을 종료합니다.
+    except Exception as e:  # 전송이 실패할 경우 예외를 처리합니다.
+      print('Failed to send message. Retrying...')
+      time.sleep(5)  # 5초를 기다린 후 재시도합니다.
+  else:
+    print('Maximum retry attempts reached. Message could not be sent.')
 
   Notification.objects.create(topic=topic, title=title, body=body, link=link)
   return
@@ -138,6 +148,7 @@ def general_bbs_crawling(post_data: UniversityPostData, post_model):
       print(f"{today} : {name} 알림 발송")
       pprint.pprint(post)
       send_topic_message(name, post['title'], post['url'], topic)
+      time.sleep(1)
   else:
     print(f"{today} : {name} 새로운 공지 없음")
 

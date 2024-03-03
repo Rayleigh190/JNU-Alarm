@@ -20,3 +20,10 @@ class Question(models.Model):
 
   def __str__(self):
     return self.title
+  
+
+class Device(models.Model):
+  device_id = models.TextField()
+  subscribed_topics = models.JSONField()
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)

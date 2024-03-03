@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Notification, CollegePost, DepartmentPost, HomePost, BusinessPost, Question
+from .models import Notification, CollegePost, DepartmentPost, HomePost, BusinessPost, Question, Device
 
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('title', 'body', 'topic', 'created_at')
@@ -20,6 +20,11 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ('title', 'topic',)
     readonly_fields=('created_at',)
 
+class DeviceAdmin(admin.ModelAdmin):
+    list_display = ('device_id', 'subscribed_topics', 'created_at', 'updated_at')
+    list_filter = ('created_at', 'updated_at',)
+    search_fields = ('subscribed_topics',)
+    readonly_fields=('created_at', 'updated_at',)
 
 admin.site.register([
     Notification, # 알림
@@ -36,3 +41,5 @@ admin.site.register([
     DepartmentPost, # 학과
     BusinessPost, # 사업단
 ], PostAdmin)
+
+admin.site.register(Device, DeviceAdmin)

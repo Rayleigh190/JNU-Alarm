@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Notification, Question
+from .models import Notification, Question, Device
 
 class NotificationSerializer(serializers.ModelSerializer):
   class Meta:
@@ -24,4 +24,9 @@ class SendNotificationSerializer(serializers.ModelSerializer):
 class QuestionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Question
+    exclude = ['id']
+
+class DeviceSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Device
     exclude = ['id']

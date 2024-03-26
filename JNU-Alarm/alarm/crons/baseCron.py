@@ -19,7 +19,7 @@ class UniversityPostData:
   
 def send_topic_message(title, body, link, topic):
   android = messaging.AndroidConfig(
-    # priority='high',
+    priority='high',
     notification=messaging.AndroidNotification(
         sound='default',
     ),

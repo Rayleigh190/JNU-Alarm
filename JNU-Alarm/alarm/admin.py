@@ -21,8 +21,8 @@ class PostAdmin(admin.ModelAdmin):
     readonly_fields=('created_at',)
 
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('device_id', 'subscribed_topics', 'created_at', 'updated_at', 'is_agree', 'is_test_device',)
-    list_filter = ('created_at', 'updated_at', 'is_test_device',)
+    list_display = ('device_id', 'subscribed_topics', 'created_at', 'updated_at', 'is_test_device', 'is_iOS',)
+    list_filter = ('created_at', 'updated_at', 'is_test_device', 'is_iOS',)
     search_fields = ('subscribed_topics',)
     readonly_fields=('created_at', 'updated_at',)
 

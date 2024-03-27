@@ -29,5 +29,5 @@ class Device(models.Model):
   updated_at = models.DateTimeField(auto_now=True)
   is_agree = models.BooleanField(default=True)
   is_test_device = models.BooleanField(default=False)
+  is_iOS = models.BooleanField(default=True) # 이후 default 제거
   memo = models.TextField(blank=True)
-  is_iOS = models.BooleanField(default=True)

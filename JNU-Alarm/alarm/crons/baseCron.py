@@ -22,6 +22,8 @@ def send_topic_message(title, body, link, topic):
     priority='high',
     notification=messaging.AndroidNotification(
         sound='default',
+        channel_id='100',
+        priority='high'
     ),
   )
 

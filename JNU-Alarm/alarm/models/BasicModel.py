@@ -12,7 +12,7 @@ class Notification(models.Model):
 
 
 class Question(models.Model):
-  email = models.EmailField()
+  email = models.EmailField(blank=True, null=True)
   title = models.TextField()
   content = models.TextField()
   is_completed = models.BooleanField(default=False)

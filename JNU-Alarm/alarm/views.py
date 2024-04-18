@@ -3,10 +3,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from firebase_admin import messaging
-from .models import Notification, Question, Device
-from .serializer import NotificationSerializer, SendNotificationSerializer, QuestionSerializer, DeviceSerializer
+from .models import Notification, Question, Device, AppInfo
+from .serializer import NotificationSerializer, SendNotificationSerializer, QuestionSerializer, DeviceSerializer, AppInfoSerializer
 from .permissions import SendMessage
 from .crons.baseCron import send_topic_message
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class NotificationView(APIView):
@@ -60,3 +61,15 @@ class QuestionView(APIView):
       return Response(result_dic, status=status.HTTP_200_OK)
     result_dic = {'success': False, 'response': None, 'error': serializer.errors}
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
+   
+
+class AppInfoView(APIView):
+  def get(self, request):
+    try:
+      app_infos = AppInfo.objects.last()
+      serializer = AppInfoSerializer(app_infos)
+      result_dic = {'success': True, 'response': serializer.data, 'error': None}
+      return Response(result_dic, status=status.HTTP_200_OK)
+    except ObjectDoesNotExist:
+      result_dic = {'success': False, 'response': None, 'error': 'AppInfo not found'}
+      return Response(result_dic, status=status.HTTP_404_NOT_FOUND)

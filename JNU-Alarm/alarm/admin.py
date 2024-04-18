@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Notification, CollegePost, DepartmentPost, HomePost, BusinessPost, Question, Device
+from .models import Notification, CollegePost, DepartmentPost, HomePost, BusinessPost, Question, Device, AppInfo
 
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('title', 'body', 'topic', 'created_at')
@@ -43,3 +43,4 @@ admin.site.register([
 ], PostAdmin)
 
 admin.site.register(Device, DeviceAdmin)
+admin.site.register(AppInfo)

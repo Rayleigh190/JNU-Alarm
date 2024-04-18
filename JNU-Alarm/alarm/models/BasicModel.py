@@ -31,3 +31,8 @@ class Device(models.Model):
   is_test_device = models.BooleanField(default=False)
   is_iOS = models.BooleanField(default=True) # 이후 default 제거
   memo = models.TextField(blank=True)
+
+
+class AppInfo(models.Model):
+  ios_latest_version = models.CharField(max_length=10, default='0.0.0')
+  aos_latest_version = models.CharField(max_length=10, default='0.0.0')

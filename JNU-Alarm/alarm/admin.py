@@ -5,6 +5,7 @@ from .models import Notification, CollegePost, DepartmentPost, HomePost, Busines
 
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('title', 'body', 'topic', 'created_at')
+    list_display_links = ('title','body',)
     list_filter = ('created_at',)
     search_fields = ('title', 'body', 'topic',)
     readonly_fields=('created_at',)
@@ -15,7 +16,8 @@ class QuestionAdmin(admin.ModelAdmin):
     readonly_fields=('created_at',)
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'topic', 'created_at')
+    list_display = ('num', 'title', 'topic', 'created_at')
+    list_display_links = ('num', 'title',)
     list_filter = ('created_at',)
     search_fields = ('title', 'topic',)
     readonly_fields=('created_at',)

@@ -8,3 +8,7 @@ def crawling_job():
   departments_crawling()
   colleges_crawling()
   business_crawling()
+
+def scan_crawling_job():
+  departments_scan()
+  colleges_scan()

@@ -1,4 +1,5 @@
 from .baseCron import general_bbs_crawling, UniversityPostData
+from .scanCron import general_bbs_scan
 from ..models import DepartmentPost
 
 department_data_list = [
@@ -133,3 +134,8 @@ def departments_crawling():
   print("\n> 학과 크롤링")
   for department_data in department_data_list:
     general_bbs_crawling(post_data=department_data, post_model=DepartmentPost)
+
+def departments_scan():
+  print("\n> 학과 스캔")
+  for college_data in department_data_list:
+    general_bbs_scan(post_data=college_data, post_model=DepartmentPost)

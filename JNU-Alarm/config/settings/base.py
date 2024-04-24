@@ -161,6 +161,7 @@ CRONJOBS = [
     ('0 9-22/1 * * *', 'alarm.crons.crawling_job', f'>> ' + os.path.join(BASE_DIR, 'alarm/log/cron_log/today.log') + ' 2>&1 '), # 9~22시 사이 1시간 간격
     # ('*/1 * * * *', 'alarm.crons.crawling_job', f'>> ' + os.path.join(BASE_DIR, 'alarm/log/cron_log/today.log') + ' 2>&1 '), # 1분 간격
     ('59 23 * * *', 'alarm.crons.change_cron_log_name', f'>> ' + os.path.join(BASE_DIR, 'alarm/log/cron_log/today.log') + ' 2>&1 '), # 매일 23시 59분
+    ('3 19,21 * * *', 'alarm.crons.scan_crawling_job', f'>> ' + os.path.join(BASE_DIR, 'alarm/log/cron_log/today.log') + ' 2>&1 '), # 스캔 크론
 ]
 
 ## FCM

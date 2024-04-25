@@ -8,6 +8,7 @@ import pprint
 from urllib3.util.retry import Retry
 
 from datetime import datetime
+import re
 
 
 home_data_list = [
@@ -42,7 +43,7 @@ def home_crawling(topic, base_url, bbs_url, post_model):
   trs = [tr for tr in all_tr_tags if not tr.find('span', class_=True)]
   for tr in trs[1:]:
     try:
-      num = int(tr.find('td').find('span').text)
+      num = int(re.findall(r'key=(\d+)', tr.find('a')['href'])[0])
       if num <= last_post.num:
         break
       else:
@@ -72,7 +73,7 @@ def home_first_crawling(topic, base_url, bbs_url, post_model):
   trs = [tr for tr in all_tr_tags if not tr.find('span', class_=True)]
   tr = trs[1]
   try:
-    num = int(tr.find('td').find('span').text)
+    num = int(re.findall(r'key=(\d+)', tr.find('a')['href'])[0])
     title = tr.find('td', attrs={'class':'title'}).find('a').text.replace('\u200b', '').replace('\xa0', ' ')
     href = tr.find('td', attrs={'class':'title'}).find('a')['href']
     postUrl = base_url + href

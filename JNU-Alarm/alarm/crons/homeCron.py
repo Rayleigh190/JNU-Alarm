@@ -1,4 +1,5 @@
 from .baseCron import UniversityPostData, send_topic_message
+from .scanCron import home_bbs_scan
 from ..models import HomePost
 
 import requests
@@ -115,3 +116,8 @@ def homes_crawling():
   print("\n> 홈페이지 크롤링")
   for home_data in home_data_list:
     home_bbs_crawling(post_data=home_data, post_model=HomePost)
+
+def homes_scan():
+  print("\n> 홈페이지 스캔")
+  for home_data in home_data_list:
+    home_bbs_scan(post_data=home_data, post_model=HomePost)

@@ -7,7 +7,7 @@ from .baseCron import UniversityPostData
 import smtplib
 from email.mime.text import MIMEText
 
-import os, environ
+import os, environ, re
 from pathlib import Path
 
 # env 파일 불러오기 Start
@@ -85,6 +85,62 @@ Link: {top_five_posts[repeat_count].link}\n'''
         break
     except Exception as e:
       print(f"general_bbs_scan() : {topic} 크롤링중 예외 발생", e)
+      pass
+    repeat_count += 1
+  print(f"{today} : {name} 스캔 결과 문제 없음")
+
+
+def home_bbs_scan(post_data: UniversityPostData, post_model):
+  today = str(datetime.now())
+  topic = post_data.topic
+  base_url = post_data.base_url
+  bbs_url = post_data.bbs_url
+  name = post_data.name
+
+  try:
+    response = session.get(bbs_url, headers=headers)
+  except Exception as e:
+    print(f"home_bbs_scan() : {topic} http 요청 예외 발생", e)
+    return
+  soup = BeautifulSoup(response.text, 'html.parser')
+
+  top_five_posts = post_model.objects.filter(topic=topic).order_by('-id')[:5]
+
+  all_tr_tags = soup.find_all('tr')
+  # class가 비어있는 모든 <tr> 태그를 찾습니다.
+  trs = [tr for tr in all_tr_tags if not tr.find('span', class_=True)]
+
+  repeat_count = 0
+  for tr in trs[1:]:
+    if repeat_count > len(top_five_posts)-1: break # 상위 5개 게시물만 확인 합니다.
+    try:
+      num = int(re.findall(r'key=(\d+)', tr.find('a')['href'])[0])
+      title = tr.find('td', attrs={'class':'title'}).find('a').text.replace('\u200b', '').replace('\xa0', ' ')
+      href = tr.find('td', attrs={'class':'title'}).find('a')['href']
+      postUrl = base_url + href
+
+      num_state = num != top_five_posts[repeat_count].num 
+      title_state = title != top_five_posts[repeat_count].title 
+      link_state = postUrl != top_five_posts[repeat_count].link
+
+      if (num_state or title_state or link_state):
+        print(f"{today} : {name} 스캔 결과 문제 발견")
+        subject = "⚠️ 전대알림 게시물 스캔 오류 보고"
+        content = f'''{name} 게시물이 DB와 동일하지 않습니다.\n
+Topic: {topic}
+상태: Num({not num_state}), Title({not title_state}), Link({not link_state})\n
+[크롤링 게시물]
+Num: {num}
+Title: {title}
+Link: {postUrl}\n
+[DB 게시물]
+Num: {top_five_posts[repeat_count].num}
+Title: {top_five_posts[repeat_count].title}
+Link: {top_five_posts[repeat_count].link}\n'''
+        send_email(subject, content)
+        break
+    except Exception as e:
+      print(f"home_bbs_scan() : {topic} 크롤링중 예외 발생", e)
       pass
     repeat_count += 1
   print(f"{today} : {name} 스캔 결과 문제 없음")

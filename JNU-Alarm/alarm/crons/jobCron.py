@@ -10,5 +10,6 @@ def crawling_job():
   business_crawling()
 
 def scan_crawling_job():
+  homes_scan()
   departments_scan()
   colleges_scan()

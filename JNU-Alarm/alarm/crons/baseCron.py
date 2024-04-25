@@ -1,4 +1,4 @@
-import requests, re
+import requests
 from bs4 import BeautifulSoup
 import pprint
 import time
@@ -86,7 +86,7 @@ def general_crawling(topic, base_url, bbs_url, post_model):
     try:
       if tr.find('td') is None:
         continue
-      num = int(re.findall(r'\d+', tr.find('a')['href'])[1])
+      num = int(tr.find('a')['href'].split('/')[4])
       if num <= last_post.num:
         break
       else:
@@ -115,7 +115,7 @@ def first_crawling(topic, base_url, bbs_url, post_model):
   tr = soup.findAll('tr', attrs={'class':''})[1]
 
   try:
-    num = int(re.findall(r'\d+', tr.find('a')['href'])[1])
+    num = int(tr.find('a')['href'].split('/')[4])
     td = tr.find('td', attrs={'class':'td-subject'})
     title = td.find('strong').text
     href = td.find('a')['href']

@@ -63,12 +63,24 @@ def general_bbs_scan(post_data: UniversityPostData, post_model):
       href = td.find('a')['href']
       postUrl = base_url + href
       
-      if (num != top_five_posts[repeat_count].num 
-          or title != top_five_posts[repeat_count].title 
-          or postUrl != top_five_posts[repeat_count].link):
+      num_state = num != top_five_posts[repeat_count].num 
+      title_state = title != top_five_posts[repeat_count].title 
+      link_state = postUrl != top_five_posts[repeat_count].link
+
+      if (num_state or title_state or link_state):
         print(f"{today} : {name} 스캔 결과 문제 발견")
         subject = "⚠️ 전대알림 게시물 스캔 오류 보고"
-        content = f"{name} 게시물이 DB와 동일하지 않습니다.\n\n[크롤링 게시물]\nNum: {num}\nTitle: {title}\nLink: {postUrl}\n\n[DB 게시물]\nNum: {top_five_posts[repeat_count].num}\nTitle: {top_five_posts[repeat_count].title}\nLink: {top_five_posts[repeat_count].link}\n"
+        content = f'''{name} 게시물이 DB와 동일하지 않습니다.\n
+Topic: {topic}
+상태: Num({not num_state}), Title({not title_state}), Link({not link_state})\n
+[크롤링 게시물]
+Num: {num}
+Title: {title}
+Link: {postUrl}\n
+[DB 게시물]
+Num: {top_five_posts[repeat_count].num}
+Title: {top_five_posts[repeat_count].title}
+Link: {top_five_posts[repeat_count].link}\n'''
         send_email(subject, content)
         break
     except Exception as e:

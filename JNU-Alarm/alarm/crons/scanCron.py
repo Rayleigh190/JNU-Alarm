@@ -57,7 +57,7 @@ def general_bbs_scan(post_data: UniversityPostData, post_model):
     try:
       if tr.find('td') is None:
         continue
-      num = int(tr.find('td', attrs={'class':'td-num'}).text)
+      num = int(re.findall(r'\d+', tr.find('a')['href'])[1])
       td = tr.find('td', attrs={'class':'td-subject'})
       title = td.find('strong').text
       href = td.find('a')['href']

@@ -55,6 +55,9 @@ def general_bbs_scan(post_data: UniversityPostData, post_model):
   for tr in soup.findAll('tr', attrs={'class':''}):
     if repeat_count > len(top_five_posts)-1: break # 상위 5개 게시물만 확인 합니다.
     try:
+      post = top_five_posts[repeat_count]
+      repeat_count += 1
+
       if tr.find('td') is None:
         continue
       num = int(tr.find('a')['href'].split('/')[4])
@@ -62,10 +65,33 @@ def general_bbs_scan(post_data: UniversityPostData, post_model):
       title = td.find('strong').text
       href = td.find('a')['href']
       postUrl = base_url + href
-      
-      num_state = num != top_five_posts[repeat_count].num 
-      title_state = title != top_five_posts[repeat_count].title 
-      link_state = postUrl != top_five_posts[repeat_count].link
+
+      num_state = num != post.num 
+      title_state = title != post.title 
+      link_state = postUrl != post.link
+
+      if not num_state and not link_state and title_state:
+        print(f"{today} : {name} 스캔 결과 문제 발견")
+        print("Title을 변경 합니다.")
+        print(f"From: {post.title}")
+        print(f"To: {title}")
+        post.title = title
+        post.save()
+        subject = "🛠️ 전대알림 게시물 데이터 수정 보고"
+        content = f'''{name} 게시물의 데이터가 수정 되었습니다.\n
+From: {post.title} > To: {title}\n
+Topic: {topic}
+상태: Num({not num_state}), Title({not title_state}), Link({not link_state})\n
+[크롤링 게시물]
+Num: {num}
+Title: {title}
+Link: {postUrl}\n
+[DB 게시물]
+Num: {post.num}
+Title: {post.title}
+Link: {post.link}\n'''
+        send_email(subject, content)
+        continue
 
       if (num_state or title_state or link_state):
         print(f"{today} : {name} 스캔 결과 문제 발견")
@@ -78,15 +104,14 @@ Num: {num}
 Title: {title}
 Link: {postUrl}\n
 [DB 게시물]
-Num: {top_five_posts[repeat_count].num}
-Title: {top_five_posts[repeat_count].title}
-Link: {top_five_posts[repeat_count].link}\n'''
+Num: {post.num}
+Title: {post.title}
+Link: {post.link}\n'''
         send_email(subject, content)
         break
     except Exception as e:
       print(f"general_bbs_scan() : {topic} 크롤링중 예외 발생", e)
       pass
-    repeat_count += 1
   print(f"{today} : {name} 스캔 결과 문제 없음")
 
 

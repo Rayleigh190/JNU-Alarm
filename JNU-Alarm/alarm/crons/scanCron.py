@@ -55,9 +55,6 @@ def general_bbs_scan(post_data: UniversityPostData, post_model):
   for tr in soup.findAll('tr', attrs={'class':''}):
     if repeat_count > len(top_five_posts)-1: break # 상위 5개 게시물만 확인 합니다.
     try:
-      post = top_five_posts[repeat_count]
-      repeat_count += 1
-
       if tr.find('td') is None:
         continue
       num = int(tr.find('a')['href'].split('/')[4])
@@ -65,6 +62,9 @@ def general_bbs_scan(post_data: UniversityPostData, post_model):
       title = td.find('strong').text
       href = td.find('a')['href']
       postUrl = base_url + href
+
+      post = top_five_posts[repeat_count]
+      repeat_count += 1  # 위치 중요합니다.
 
       num_state = num != post.num 
       title_state = title != post.title 

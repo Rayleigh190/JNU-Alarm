@@ -71,15 +71,16 @@ def general_bbs_scan(post_data: UniversityPostData, post_model):
       link_state = postUrl != post.link
 
       if not num_state and not link_state and title_state:
+        previous_title = post.title
         print(f"{today} : {name} 스캔 결과 문제 발견")
         print("Title을 변경 합니다.")
-        print(f"From: {post.title}")
+        print(f"From: {previous_title}")
         print(f"To: {title}")
         post.title = title
         post.save()
         subject = "🛠️ 전대알림 게시물 데이터 수정 보고"
         content = f'''{name} 게시물의 데이터가 수정 되었습니다.\n
-From: {post.title} > To: {title}\n
+From: {previous_title} > To: {title}\n
 Topic: {topic}
 상태: Num({not num_state}), Title({not title_state}), Link({not link_state})\n
 [크롤링 게시물]
@@ -88,7 +89,7 @@ Title: {title}
 Link: {postUrl}\n
 [DB 게시물]
 Num: {post.num}
-Title: {post.title}
+Title: {previous_title}
 Link: {post.link}\n'''
         send_email(subject, content)
         continue

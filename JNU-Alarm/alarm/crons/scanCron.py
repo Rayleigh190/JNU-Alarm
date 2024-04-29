@@ -130,45 +130,50 @@ def home_bbs_scan(post_data: UniversityPostData, post_model):
     return
   soup = BeautifulSoup(response.text, 'html.parser')
 
-  top_five_posts = post_model.objects.filter(topic=topic).order_by('-id')[:5]
+  top_five_posts = post_model.objects.filter(topic=topic).order_by('-id')[:5] # DB에서 가져온 게시물들
 
   all_tr_tags = soup.find_all('tr')
-  # class가 비어있는 모든 <tr> 태그를 찾습니다.
-  trs = [tr for tr in all_tr_tags if not tr.find('span', class_=True)]
 
-  repeat_count = 0
-  for tr in trs[1:]:
-    if repeat_count > len(top_five_posts)-1: break # 상위 5개 게시물만 확인 합니다.
+  posts = []  # 게시판에서 가져온 게시물들
+  # 게시판에서 글들을 가져와 num 기준 내림차순으로 정렬합니다.
+  for tr in all_tr_tags[1:]:
     try:
       num = int(re.findall(r'key=(\d+)', tr.find('a')['href'])[0])
       title = tr.find('td', attrs={'class':'title'}).find('a').text.replace('\u200b', '').replace('\xa0', ' ')
       href = tr.find('td', attrs={'class':'title'}).find('a')['href']
       postUrl = base_url + href
-
-      num_state = num != top_five_posts[repeat_count].num 
-      title_state = title != top_five_posts[repeat_count].title 
-      link_state = postUrl != top_five_posts[repeat_count].link
-
-      if (num_state or title_state or link_state):
-        print(f"{today} : {name} 스캔 결과 문제 발견")
-        subject = "⚠️ 전대알림 게시물 스캔 오류 보고"
-        content = f'''{name} 게시물이 DB와 동일하지 않습니다.\n
-Topic: {topic}
-상태: Num({not num_state}), Title({not title_state}), Link({not link_state})\n
-[크롤링 게시물]
-Num: {num}
-Title: {title}
-Link: {postUrl}\n
-[DB 게시물]
-Num: {top_five_posts[repeat_count].num}
-Title: {top_five_posts[repeat_count].title}
-Link: {top_five_posts[repeat_count].link}\n'''
-        send_email(subject, content)
-        break
+      post_data = {
+        'num': num,
+        'title': title,
+        'url': postUrl
+      }
+      posts.append(post_data)
     except Exception as e:
       print(f"home_bbs_scan() : {topic} 크롤링중 예외 발생", e)
       pass
-    repeat_count += 1
+  posts.sort(key=lambda x: x['num'], reverse=True)
+
+  for i, post in enumerate(top_five_posts):
+    num_state = posts[i]['num'] != post.num 
+    title_state = posts[i]['title'] != post.title 
+    link_state = posts[i]['url'] != post.link
+
+    if (num_state or title_state or link_state):
+      print(f"{today} : {name} 스캔 결과 문제 발견")
+      subject = "⚠️ 전대알림 게시물 스캔 오류 보고"
+      content = f'''{name} 게시물이 DB와 동일하지 않습니다.\n
+Topic: {topic}
+상태: Num({not num_state}), Title({not title_state}), Link({not link_state})\n
+[크롤링 게시물]
+Num: {posts[i]['num']}
+Title: {posts[i]['title']}
+Link: {posts[i]['url']}\n
+[DB 게시물]
+Num: {post.num}
+Title: {post.title}
+Link: {post.link}\n'''
+      send_email(subject, content)
+      break
   print(f"{today} : {name} 스캔 결과 문제 없음")
 
 

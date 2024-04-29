@@ -40,13 +40,12 @@ def home_crawling(topic, base_url, bbs_url, post_model):
   soup = BeautifulSoup(response.text, 'html.parser')
   last_post = post_model.objects.filter(topic=topic).last()
   all_tr_tags = soup.find_all('tr')
-  # class가 비어있는 모든 <tr> 태그를 찾습니다.
-  trs = [tr for tr in all_tr_tags if not tr.find('span', class_=True)]
-  for tr in trs[1:]:
+  
+  for tr in all_tr_tags[1:]:
     try:
       num = int(re.findall(r'key=(\d+)', tr.find('a')['href'])[0])
       if num <= last_post.num:
-        break
+        continue
       else:
         title = tr.find('td', attrs={'class':'title'}).find('a').text.replace('\u200b', '').replace('\xa0', ' ')
         href = tr.find('td', attrs={'class':'title'}).find('a')['href']
@@ -60,6 +59,7 @@ def home_crawling(topic, base_url, bbs_url, post_model):
     except Exception as e:
       print(f"home_crawling() : {topic} 크롤링중 예외 발생", e)
       pass
+  posts.sort(key=lambda x: x['num'], reverse=True)
   return posts
 
 def home_first_crawling(topic, base_url, bbs_url, post_model):

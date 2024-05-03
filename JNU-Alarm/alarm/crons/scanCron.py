@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from urllib3.util.retry import Retry
 from .baseCron import UniversityPostData
+from ..models import Notification
 
 import smtplib
 from email.mime.text import MIMEText
@@ -78,6 +79,13 @@ def general_bbs_scan(post_data: UniversityPostData, post_model):
         print(f"To: {title}")
         post.title = title
         post.save()
+        
+        # 알림내역 body 수정 START
+        notification = Notification.objects.get(link=post.link)
+        notification.body = title
+        notification.save()
+        # 알림내역 body 수정 END
+
         subject = "🛠️ 전대알림 게시물 데이터 수정 보고"
         content = f'''{name} 게시물의 데이터가 수정 되었습니다.\n
 From: {previous_title} > To: {title}\n

@@ -9,6 +9,8 @@ from .permissions import SendMessage
 from .crons.baseCron import send_topic_message
 from django.core.exceptions import ObjectDoesNotExist
 
+from .crons.scanCron import send_email
+
 
 class NotificationView(APIView):
   def post(self, request, *args, **kwargs):
@@ -57,6 +59,18 @@ class QuestionView(APIView):
     serializer = QuestionSerializer(data=request.data)
     if serializer.is_valid():
       serializer.save()
+      
+      email = serializer.validated_data.get('email')
+      title = serializer.validated_data.get('title')
+      content = serializer.validated_data.get('content')
+
+      subject = "📢 전대알림에 질문이 등록됐어요"
+      content = f'''이메일 : {email}\n
+제목 : {title}\n
+내용 : {content}
+'''
+      send_email(subject, content)
+
       result_dic = {'success': True, 'response': None, 'error': None}
       return Response(result_dic, status=status.HTTP_200_OK)
     result_dic = {'success': False, 'response': None, 'error': serializer.errors}

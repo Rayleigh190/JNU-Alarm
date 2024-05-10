@@ -171,3 +171,12 @@ from firebase_admin import credentials
 cred_path = os.path.join(BASE_DIR, "serviceAccountKey.json")
 cred = credentials.Certificate(cred_path)
 firebase_admin.initialize_app(cred)
+
+
+## django.core.mail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env('ADMIN_MAIL')
+EMAIL_HOST_PASSWORD = env('ADMIN_PASSWORD')
+EMAIL_USE_TLS = True

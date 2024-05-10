@@ -5,9 +5,8 @@ from urllib3.util.retry import Retry
 from .baseCron import UniversityPostData
 from ..models import Notification
 
-import smtplib
-from email.mime.text import MIMEText
-
+from .asynchronous_send_mail import send_mail
+from django.conf import settings
 import os, environ, re
 from pathlib import Path
 
@@ -186,20 +185,15 @@ Link: {post.link}\n'''
 
 
 def send_email(subject, content):
-  admin_mail = env('ADMIN_MAIL') # 보안
-  admin_password = env('ADMIN_PASSWORD') # 보안
-
-  s = smtplib.SMTP('smtp.gmail.com', 587)  # 세션 생성
-  s.starttls()  # TLS 보안 시작
-  s.login(admin_mail, admin_password)  # 로그인 인증
-  
-  # 받는 사람 
-  receiver_mail = "dnwls8462@naver.com"
-
-  msg = MIMEText(content)
-  msg['Subject'] = subject
-  msg['From'] = "전대알림"
-  msg['To'] = receiver_mail
-  s.sendmail(admin_mail, receiver_mail, msg.as_string())
-  s.quit()  # 세션 종료
-  print("📧 이메일 발송 완료")
+  try:
+    receiver_email = "dnwls8462@naver.com"
+    send_mail(
+        subject=subject,
+        body=content,
+        from_email=f'전대알림 <{settings.EMAIL_HOST_USER}>',
+        recipient_list=[receiver_email],
+        auth_user="전대알림",
+    )
+    print("📧 이메일 발송")
+  except Exception as e:
+    print(f"이메일 발송 오류 발생 : {e}")

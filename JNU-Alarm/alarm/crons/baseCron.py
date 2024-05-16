@@ -40,6 +40,10 @@ def send_topic_message(title, body, link, topic):
       title=title,
       body=body,
     ),
+    data={
+        'title': title,
+        'link': link,
+    },
     android=android,
     apns=apns,
     topic=topic,

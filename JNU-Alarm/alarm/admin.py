@@ -25,7 +25,7 @@ class PostAdmin(admin.ModelAdmin):
 class DeviceAdmin(admin.ModelAdmin):
     list_display = ('device_id', 'subscribed_topics', 'created_at', 'updated_at', 'is_test_device', 'is_iOS',)
     list_filter = ('created_at', 'updated_at', 'is_test_device', 'is_iOS',)
-    search_fields = ('=subscribed_topics',)
+    search_fields = ('subscribed_topics',)
     readonly_fields=('created_at', 'updated_at',)
 
 admin.site.register([

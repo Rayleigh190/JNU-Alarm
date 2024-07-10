@@ -13,6 +13,7 @@ from datetime import datetime
 business_data_list = [
   UniversityPostData(topic='sojoong', base_url="https://www.sojoong.kr/www/notice/view/", bbs_url="https://www.sojoong.kr/www/notice/", name="소프트웨어중심대학사업단"),
   UniversityPostData(topic='aicoss', base_url="https://aicoss.kr/www/notice/view/", bbs_url="https://aicoss.kr/www/notice/?cate=%EC%A0%84%EB%82%A8%EB%8C%80%ED%95%99%EA%B5%90", name="인공지능혁신융합대학사업단"),
+  UniversityPostData(topic='nccoss', base_url="https://jnu.nccoss.kr/www/notice/view/", bbs_url="https://jnu.nccoss.kr/www/notice/", name="차세대통신혁신융합대학사업단"),
 ]
 
 headers = {

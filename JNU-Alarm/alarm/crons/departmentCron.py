@@ -17,6 +17,7 @@ department_data_list = [
   UniversityPostData(topic='resources', base_url="https://resources.jnu.ac.kr", bbs_url="https://resources.jnu.ac.kr/resources/14018/subview.do", name="에너지자원공학과"),
   UniversityPostData(topic='ace', base_url="https://ace.jnu.ac.kr", bbs_url="https://ace.jnu.ac.kr/ace/12509/subview.do", name="화학공학부"),
   UniversityPostData(topic='elec', base_url="https://elec.jnu.ac.kr", bbs_url="https://elec.jnu.ac.kr/elec/14099/subview.do", name="전기공학과"),
+  UniversityPostData(topic='eceng', base_url="https://eceng.jnu.ac.kr", bbs_url="https://eceng.jnu.ac.kr/eceng/20079/subview.do", name="전자컴퓨터공학부"),
   UniversityPostData(topic='ee', base_url="https://ee.jnu.ac.kr", bbs_url="https://ee.jnu.ac.kr/ee/12439/subview.do", name="전자공학과"),
   UniversityPostData(topic='ce', base_url="https://ce.jnu.ac.kr", bbs_url="https://ce.jnu.ac.kr/ce/12474/subview.do", name="컴퓨터정보통신공학과"),
   UniversityPostData(topic='sw', base_url="https://sw.jnu.ac.kr", bbs_url="https://sw.jnu.ac.kr/sw/8250/subview.do", name="소프트웨어공학과"),

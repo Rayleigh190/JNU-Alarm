@@ -1,6 +1,6 @@
 from django.urls import path, include
-from .views import ShortcutsView
+from .views import ShortcutView
 
 urlpatterns = [
-  path("shortcuts/", ShortcutsView.as_view()),
+  path("shortcut/", ShortcutView.as_view()),
 ]

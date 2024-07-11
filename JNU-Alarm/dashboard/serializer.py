@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Shortcuts
+from .models import Shortcut
 
-class ShortcutsSerializer(serializers.ModelSerializer):
+class ShortcutSerializer(serializers.ModelSerializer):
   class Meta:
-    model = Shortcuts
+    model = Shortcut
     exclude = ['id']

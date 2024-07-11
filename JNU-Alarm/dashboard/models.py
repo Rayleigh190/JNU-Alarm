@@ -1,6 +1,6 @@
 from django.db import models
 
-class Shortcuts(models.Model):
+class Shortcut(models.Model):
   name = models.CharField(max_length=10)
   ios_image_name = models.CharField(max_length=20)
   aos_image_name = models.CharField(max_length=20)

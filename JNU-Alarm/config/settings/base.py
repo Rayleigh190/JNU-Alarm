@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     
     'users',
     'alarm',
+    'dashboard',
 ]
 
 MIDDLEWARE = [

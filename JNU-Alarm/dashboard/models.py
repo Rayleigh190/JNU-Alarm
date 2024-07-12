@@ -19,3 +19,13 @@ class BannerAd(models.Model):
   direction_url = models.URLField(blank=True)
   is_available = models.BooleanField()
   expiry_date = models.DateField()
+
+class Restaurant(models.Model):
+  name = models.CharField(max_length=20)
+  road_address = models.CharField(max_length=50)
+  jibun_address = models.CharField(max_length=50)
+  latitude = models.FloatField()
+  longitude = models.FloatField()
+  type = models.CharField(max_length=10)
+  naver_map_url = models.URLField()
+  is_available = models.BooleanField()

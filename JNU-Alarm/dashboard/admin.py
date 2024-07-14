@@ -13,12 +13,12 @@ make_unavailable_action.short_description = "선택된 아이템의 is_available
 
 @admin.register(Shortcut)
 class ShortcutAdmin(admin.ModelAdmin):
-  list_display = ('name', 'is_available', 'is_webview', 'is_modal',)
+  list_display = ('name', 'is_webview', 'is_modal', 'is_available',)
   actions = [make_available_action, make_unavailable_action]
 
 @admin.register(BannerAd)
 class BannerAdmin(admin.ModelAdmin):
-  list_display = ('name', 'is_available', 'expiry_date')
+  list_display = ('name', 'expiry_date', 'is_available',)
   actions = [make_available_action, make_unavailable_action]
 
 @admin.register(Restaurant)

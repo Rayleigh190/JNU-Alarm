@@ -36,3 +36,4 @@ class Device(models.Model):
 class AppInfo(models.Model):
   ios_latest_version = models.CharField(max_length=10, default='0.0.0')
   aos_latest_version = models.CharField(max_length=10, default='0.0.0')
+  is_available = models.BooleanField(default=True)

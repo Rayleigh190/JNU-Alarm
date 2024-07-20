@@ -28,6 +28,9 @@ class DeviceAdmin(admin.ModelAdmin):
     search_fields = ('subscribed_topics',)
     readonly_fields=('created_at', 'updated_at',)
 
+class AppInfoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'ios_latest_version', 'aos_latest_version', 'is_available',)
+
 admin.site.register([
     Notification, # 알림
 ], NotificationAdmin)
@@ -45,4 +48,4 @@ admin.site.register([
 ], PostAdmin)
 
 admin.site.register(Device, DeviceAdmin)
-admin.site.register(AppInfo)
+admin.site.register(AppInfo, AppInfoAdmin)

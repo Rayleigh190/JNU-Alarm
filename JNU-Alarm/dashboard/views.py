@@ -36,9 +36,10 @@ class BannerAdView(APIView):
 
 class RestaurantRecommendationView(APIView):
   def get(self, request):
-    restaurants = list(Restaurant.objects.filter(is_available=True))
-    if restaurants:
-      random_restaurant = random.choice(restaurants)
+    pks = Restaurant.objects.values_list('pk', flat=True)
+    random_pk = random.choice(pks)
+    random_restaurant = Restaurant.objects.get(pk=random_pk)
+    if random_restaurant:
       serializer = RestaurantSerializer(random_restaurant)
       result_dic = {
         'success': True, 

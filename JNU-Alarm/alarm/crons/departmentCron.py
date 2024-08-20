@@ -2,6 +2,7 @@ from .baseCron import general_bbs_crawling, UniversityPostData
 from .scanCron import general_bbs_scan
 from ..models import DepartmentPost
 
+# 대학·학부
 department_data_list = [
   ## 간호대학
   UniversityPostData(topic='nursing', base_url="https://nursing.jnu.ac.kr", bbs_url="https://nursing.jnu.ac.kr/nursing/5656/subview.do", name="간호학과"),
@@ -129,6 +130,20 @@ department_data_list = [
   UniversityPostData(topic='dfmitl', base_url="https://dfmitl.jnu.ac.kr", bbs_url="https://dfmitl.jnu.ac.kr/dfmitl/3202/subview.do", name="수산해양산업관광레저융합학과(계약학과)"),
   ## 창의융합학부(여수)
   UniversityPostData(topic='fcc', base_url="https://fcc.jnu.ac.kr", bbs_url="https://fcc.jnu.ac.kr/fcc/18180/subview.do", name="창의융합학부")
+]
+
+# 전문대학원
+department_data_list += [
+  ## 경영전문대학원
+  UniversityPostData(topic='mba', base_url="https://mba.jnu.ac.kr", bbs_url="https://mba.jnu.ac.kr/mba/15148/subview.do", name="경영전문대학원"),
+  ## 문화전문대학원
+  UniversityPostData(topic='culture', base_url="https://culture.jnu.ac.kr", bbs_url="https://culture.jnu.ac.kr/culture/11982/subview.do", name="문화전문대학원"),
+  ## 치의학전문대학원
+  UniversityPostData(topic='dent', base_url="https://dent.jnu.ac.kr", bbs_url="https://dent.jnu.ac.kr/dent/17583/subview.do", name="치의학전문대학원"),
+  ## 법학전문대학원
+  UniversityPostData(topic='lawschool', base_url="https://lawschool.jnu.ac.kr", bbs_url="https://lawschool.jnu.ac.kr/lawschool/11039/subview.do", name="법학전문대학원"),
+  ## 데이터사이언스대학원
+  UniversityPostData(topic='ds', base_url="https://ds.jnu.ac.kr", bbs_url="https://ds.jnu.ac.kr/ds/17169/subview.do", name="데이터사이언스대학원"),
 ]
 
 def departments_crawling():

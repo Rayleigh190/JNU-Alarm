@@ -165,6 +165,38 @@ def home_bbs_scan(post_data: UniversityPostData, post_model):
     title_state = posts[i]['title'] != post.title 
     link_state = posts[i]['url'] != post.link
 
+    if not num_state and not link_state and title_state:
+      previous_title = post.title
+      new_title = posts[i]['title']
+      print(f"{today} : {name} 스캔 결과 문제 발견")
+      print("Title을 변경 합니다.")
+      print(f"From: {previous_title}")
+      print(f"To: {new_title}")
+      post.title = new_title
+      post.save()
+      
+      # 알림내역 body 수정 START
+      notification = Notification.objects.get(link=post.link)
+      notification.body = new_title
+      notification.save()
+      # 알림내역 body 수정 END
+
+      subject = "🛠️ 전대알림 게시물 데이터 수정 보고"
+      content = f'''{name} 게시물의 데이터가 수정 되었습니다.\n
+From: {previous_title} > To: {new_title}\n
+Topic: {topic}
+상태: Num({not num_state}), Title({not title_state}), Link({not link_state})\n
+[크롤링 게시물]
+Num: {posts[i]['num']}
+Title: {new_title}
+Link: {posts[i]['url']}\n
+[DB 게시물]
+Num: {post.num}
+Title: {previous_title}
+Link: {post.link}\n'''
+      send_email(subject, content)
+      continue
+
     if (num_state or title_state or link_state):
       print(f"{today} : {name} 스캔 결과 문제 발견")
       subject = "⚠️ 전대알림 게시물 스캔 오류 보고"

@@ -2,7 +2,7 @@ from .base import *
 
 Debug = False
 
-ALLOWED_HOSTS = [env('AWS_IP')]
+ALLOWED_HOSTS = [env('AWS_IP'), ".jnu-alarm.site",]
 
 DATABASES = {
     'default': {

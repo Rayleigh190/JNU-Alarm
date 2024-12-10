@@ -1,3 +1,4 @@
+import requests
 from rest_framework import status, generics
 from rest_framework.response import Response  
 from rest_framework.views import APIView
@@ -55,3 +56,42 @@ class LoginView(generics.GenericAPIView):
         status=status.HTTP_200_OK,
     )
     return res
+
+
+import google.auth.transport.requests
+from google.oauth2 import service_account
+
+SCOPES = ['https://www.googleapis.com/auth/firebase.messaging']
+# [START retrieve_access_token]
+def _get_access_token():
+  """Retrieve a valid access token that can be used to authorize requests.
+
+  :return: Access token.
+  """
+  credentials = service_account.Credentials.from_service_account_file(
+    'serviceAccountKey.json', scopes=SCOPES)
+  request = google.auth.transport.requests.Request()
+  credentials.refresh(request)
+  return credentials.token
+# [END retrieve_access_token]
+
+class UserFcmInfoView(APIView):
+  def get(self, request, *args, **kwargs):
+    token = request.query_params.get("token")
+    if not token:
+      return Response({"error": "Token parameter is required"}, status=400)
+    url = f"https://iid.googleapis.com/iid/info/{token}?details=true"
+    headers = {
+        'Authorization': 'Bearer ' + _get_access_token(),
+        'Content-Type': 'application/json; UTF-8',
+        'access_token_auth': 'true'
+    }
+    
+    try:
+      response = requests.get(url, headers=headers)
+      response.raise_for_status()
+      result_dic = {'success': True, 'response': response.json(), 'error': None}
+      return Response(result_dic, status=status.HTTP_200_OK)
+    except requests.exceptions.HTTPError as e:
+      result_dic = {'success': True, 'response': str(e), 'error': None}
+      return Response(result_dic, status=status.HTTP_200_OK)

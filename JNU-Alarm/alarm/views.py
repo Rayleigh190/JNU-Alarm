@@ -33,6 +33,12 @@ class NotificationView(APIView):
       return Response(result_dic, status=status.HTTP_200_OK)
     result_dic = {'success': False, 'response': None, 'error': serializer.errors}
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
+  def get(self, request, *args, **kwargs):
+    topic_list = request.GET.get('topics').split(",")
+    notifications = Notification.objects.filter(topic__in=topic_list).order_by('-created_at')[:20]
+    serializer = NotificationSerializer(notifications, many=True)
+    result_dic = {'success': True, 'response': serializer.data, 'error': None}
+    return Response(result_dic, status=status.HTTP_200_OK)
 
 
 class SendTopicMessage(APIView):

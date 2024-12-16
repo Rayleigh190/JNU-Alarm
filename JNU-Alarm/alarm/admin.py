@@ -4,7 +4,7 @@ from django.contrib import admin
 from .models import Notification, CollegePost, DepartmentPost, HomePost, BusinessPost, Question, Device, AppInfo
 
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ('title', 'body', 'topic', 'created_at')
+    list_display = ('id', 'title', 'body', 'topic', 'created_at')
     list_display_links = ('title','body',)
     list_filter = ('created_at',)
     search_fields = ('title', 'body', '=topic',)

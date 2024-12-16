@@ -8,6 +8,8 @@ from .serializer import NotificationSerializer, SendNotificationSerializer, Ques
 from .permissions import SendMessage
 from .crons.baseCron import send_topic_message
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.timezone import make_aware
+from datetime import datetime
 
 from .crons.scanCron import send_email
 
@@ -35,7 +37,8 @@ class NotificationView(APIView):
     return Response(result_dic, status=status.HTTP_400_BAD_REQUEST)
   def get(self, request, *args, **kwargs):
     topic_list = request.GET.get('topics').split(",")
-    notifications = Notification.objects.filter(topic__in=topic_list).order_by('-created_at')[:20]
+    date = make_aware(datetime.strptime(request.GET.get('date'), "%Y-%m-%d %H:%M:%S.%f"))
+    notifications = Notification.objects.filter(created_at__gt=date).filter(topic__in=topic_list).order_by('-created_at')
     serializer = NotificationSerializer(notifications, many=True)
     result_dic = {'success': True, 'response': serializer.data, 'error': None}
     return Response(result_dic, status=status.HTTP_200_OK)

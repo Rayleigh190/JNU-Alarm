@@ -18,6 +18,8 @@ class UniversityPostData:
   name: str
   
 def send_topic_message(title, body, link, topic):
+  notification_object = Notification.objects.create(topic=topic, title=title, body=body, link=link)
+
   android = messaging.AndroidConfig(
     priority='high',
     notification=messaging.AndroidNotification(
@@ -43,6 +45,7 @@ def send_topic_message(title, body, link, topic):
     data={
         'title': title,
         'link': link,
+        'id': f'{notification_object.id}',
     },
     android=android,
     apns=apns,
@@ -60,7 +63,6 @@ def send_topic_message(title, body, link, topic):
   else:
     print('Maximum retry attempts reached. Message could not be sent.')
 
-  Notification.objects.create(topic=topic, title=title, body=body, link=link)
   return
 
 headers = {

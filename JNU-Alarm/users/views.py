@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer, LoginSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.conf import settings
 
 class RegisterView(APIView):
   def post(self, request):
@@ -56,6 +57,13 @@ class LoginView(generics.GenericAPIView):
         status=status.HTTP_200_OK,
     )
     return res
+
+class DevModeView(APIView):
+  def post(self, request):
+    pw = request.data['password']
+    if pw == settings.DEV_MODE_PASSWORD:
+      return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 import google.auth.transport.requests

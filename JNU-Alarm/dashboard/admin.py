@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Shortcut, BannerAd, Restaurant
+from .models import Shortcut, BannerAd, TopBannerAd, Restaurant
 
 def make_available_action(modeladmin, request, queryset):
     queryset.update(is_available=True)
@@ -18,6 +18,11 @@ class ShortcutAdmin(admin.ModelAdmin):
 
 @admin.register(BannerAd)
 class BannerAdmin(admin.ModelAdmin):
+  list_display = ('name', 'expiry_date', 'is_available',)
+  actions = [make_available_action, make_unavailable_action]
+
+@admin.register(TopBannerAd)
+class TopBannerAdmin(admin.ModelAdmin):
   list_display = ('name', 'expiry_date', 'is_available',)
   actions = [make_available_action, make_unavailable_action]
 

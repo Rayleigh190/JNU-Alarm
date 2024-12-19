@@ -21,6 +21,14 @@ class BannerAd(models.Model):
   is_external_browser = models.BooleanField(default=False)
   is_available = models.BooleanField()
 
+class TopBannerAd(models.Model):
+  name = models.CharField(max_length=50)
+  image_url = models.URLField()
+  direction_url = models.URLField(blank=True)
+  expiry_date = models.DateField()
+  is_external_browser = models.BooleanField(default=False)
+  is_available = models.BooleanField()
+
 class Restaurant(models.Model):
   name = models.CharField(max_length=20)
   road_address = models.CharField(max_length=50)

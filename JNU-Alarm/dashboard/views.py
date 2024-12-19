@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_control
-from .models import Shortcut, BannerAd, Restaurant
-from .serializer import ShortcutSerializer, BannerAdSerializer, RestaurantSerializer
+from .models import Shortcut, BannerAd, TopBannerAd, Restaurant
+from .serializer import ShortcutSerializer, BannerAdSerializer, TopBannerAdSerializer, RestaurantSerializer
 from django.utils import timezone
 import random
 
@@ -27,6 +27,19 @@ class BannerAdView(APIView):
     bannerAds = BannerAd.objects.filter(is_available=True, expiry_date__gte=today)
     random_ad = random.choice(bannerAds)
     serializer = BannerAdSerializer(random_ad)
+    result_dic = {
+      'success': True,
+      'response': serializer.data,
+      'error': None
+    }
+    return Response(result_dic, status=status.HTTP_200_OK)
+
+class TopBannerAdView(APIView):
+  @method_decorator(cache_control(max_age=10))
+  def get(self, request):
+    today = timezone.now()
+    bannerAds = TopBannerAd.objects.filter(is_available=True, expiry_date__gte=today)
+    serializer = TopBannerAdSerializer(bannerAds, many=True)
     result_dic = {
       'success': True,
       'response': serializer.data,

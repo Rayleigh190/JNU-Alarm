@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Shortcut, BannerAd, Restaurant
+from .models import Shortcut, BannerAd, TopBannerAd, Restaurant
 
 class ShortcutSerializer(serializers.ModelSerializer):
   class Meta:
@@ -9,6 +9,11 @@ class ShortcutSerializer(serializers.ModelSerializer):
 class BannerAdSerializer(serializers.ModelSerializer):
   class Meta:
     model = BannerAd
+    exclude = ['id']
+
+class TopBannerAdSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = TopBannerAd
     exclude = ['id']
 
 class RestaurantSerializer(serializers.ModelSerializer):

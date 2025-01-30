@@ -159,6 +159,7 @@ AUTH_USER_MODEL = 'auth.User'
 
 ## CRONTAP
 CRONJOBS = [
+    # ('* * * * *', 'alarm.crons.crawling_job', f'>> ' + os.path.join(BASE_DIR, 'alarm/log/cron_log/today.log') + ' 2>&1 '), # 로컬 테스트
     ('0 9-22/1 * * *', 'alarm.crons.crawling_job', f'>> ' + os.path.join(BASE_DIR, 'alarm/log/cron_log/today.log') + ' 2>&1 '), # 9~22시 사이 1시간 간격
     # ('0 9,11-22/1 * * *', 'alarm.crons.crawling_job', f'>> ' + os.path.join(BASE_DIR, 'alarm/log/cron_log/today.log') + ' 2>&1 '), # 👆수강신청 기간용
     ('59 23 * * *', 'alarm.crons.change_cron_log_name', f'>> ' + os.path.join(BASE_DIR, 'alarm/log/cron_log/today.log') + ' 2>&1 '), # 매일 23시 59분
